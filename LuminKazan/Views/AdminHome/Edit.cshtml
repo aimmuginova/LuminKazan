@@ -1,0 +1,153 @@
+﻿@model LuminKazan.ViewModels.PhotographerProfileViewModel
+
+@{
+    Layout = "_AdminLayout";
+    ViewData["Title"] = "Главная страница";
+}
+
+<section class="admin-page">
+    <div class="admin-page__header">
+        <div>
+            <span class="admin-page__label">Главная страница</span>
+
+            <h1 class="admin-page__title">Профиль фотографа</h1>
+
+            <p class="admin-page__description">
+                Данные основного блока, контактная информация и изображение на главной странице.
+            </p>
+        </div>
+
+        <div class="admin-page__actions">
+            <a asp-controller="Admin"
+               asp-action="Index"
+               class="admin-button admin-button--secondary">
+                Назад в панель
+            </a>
+        </div>
+    </div>
+
+    <form asp-controller="AdminHome"
+          asp-action="Edit"
+          method="post"
+          enctype="multipart/form-data"
+          class="admin-form">
+
+        @Html.AntiForgeryToken()
+
+        <input asp-for="Id" type="hidden" />
+        <input asp-for="CurrentProfileImagePath" type="hidden" />
+
+        <div asp-validation-summary="ModelOnly" class="admin-validation"></div>
+
+        <section class="admin-form__section">
+            <span class="admin-form__section-label">Профиль</span>
+
+            <h2 class="admin-form__section-title">Основная информация</h2>
+
+            <div class="admin-form__grid">
+                <div class="admin-form__field admin-form__field--wide">
+                    <label asp-for="FullName">Имя фотографа</label>
+                    <input asp-for="FullName" />
+                    <span asp-validation-for="FullName" class="admin-validation"></span>
+                </div>
+
+                <div class="admin-form__field admin-form__field--wide">
+                    <label asp-for="Specialization">Специализация</label>
+                    <input asp-for="Specialization" />
+                    <span asp-validation-for="Specialization" class="admin-validation"></span>
+                </div>
+
+                <div class="admin-form__field admin-form__field--wide">
+                    <label asp-for="Biography">Описание</label>
+                    <textarea asp-for="Biography" rows="7"></textarea>
+                    <span asp-validation-for="Biography" class="admin-validation"></span>
+                </div>
+
+                <div class="admin-form__field">
+                    <label asp-for="ExperienceYears">Опыт, лет</label>
+                    <input asp-for="ExperienceYears" type="number" min="0" max="60" step="1" />
+                    <span asp-validation-for="ExperienceYears" class="admin-validation"></span>
+                </div>
+            </div>
+        </section>
+
+        <section class="admin-form__section">
+            <span class="admin-form__section-label">Контакты</span>
+
+            <h2 class="admin-form__section-title">Связь и ссылки</h2>
+
+            <div class="admin-form__grid">
+                <div class="admin-form__field">
+                    <label asp-for="Phone">Телефон</label>
+                    <input asp-for="Phone" />
+                    <span asp-validation-for="Phone" class="admin-validation"></span>
+                </div>
+
+                <div class="admin-form__field">
+                    <label asp-for="Email">Email</label>
+                    <input asp-for="Email" />
+                    <span asp-validation-for="Email" class="admin-validation"></span>
+                </div>
+
+                <div class="admin-form__field">
+                    <label asp-for="TelegramLink">Telegram</label>
+                    <input asp-for="TelegramLink" />
+                    <span asp-validation-for="TelegramLink" class="admin-validation"></span>
+                </div>
+
+                <div class="admin-form__field">
+                    <label asp-for="InstagramLink">Instagram</label>
+                    <input asp-for="InstagramLink" />
+                    <span asp-validation-for="InstagramLink" class="admin-validation"></span>
+                </div>
+            </div>
+        </section>
+
+        <section class="admin-form__section">
+            <span class="admin-form__section-label">Изображение</span>
+
+            <h2 class="admin-form__section-title">Фото на главной странице</h2>
+
+            @if (!string.IsNullOrWhiteSpace(Model.CurrentProfileImagePath))
+            {
+                <div class="admin-current-image">
+                    <img src="@Model.CurrentProfileImagePath" alt="@Model.FullName" />
+                </div>
+            }
+
+            <div class="admin-form__grid">
+                <div class="admin-form__field admin-form__field--wide">
+                    <label asp-for="ProfileImageFile">Загрузить новое фото</label>
+
+                    <input asp-for="ProfileImageFile"
+                           type="file"
+                           accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp" />
+
+                    <span asp-validation-for="ProfileImageFile" class="admin-validation"></span>
+                </div>
+
+                <div class="admin-form__field admin-form__field--wide">
+                    <label asp-for="ProfileImagePath">Путь к изображению</label>
+                    <input asp-for="ProfileImagePath" />
+                    <span asp-validation-for="ProfileImagePath" class="admin-validation"></span>
+                </div>
+            </div>
+        </section>
+
+        <div class="admin-form__actions">
+            <button type="submit" class="admin-button admin-button--primary">
+                Сохранить изменения
+            </button>
+
+            <a asp-controller="Admin"
+               asp-action="Index"
+               class="admin-button admin-button--secondary">
+                Отмена
+            </a>
+        </div>
+    </form>
+</section>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
