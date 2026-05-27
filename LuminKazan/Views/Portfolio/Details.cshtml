@@ -1,0 +1,95 @@
+﻿@model LuminKazan.Models.PortfolioItem
+
+@{
+    ViewData["Title"] = Model.Title;
+}
+
+<section class="portfolio-detail-page">
+    <div class="portfolio-detail-hero">
+        <div class="portfolio-detail-info">
+            <span class="section-label">Фотосерия</span>
+            <h1>@Model.Title</h1>
+
+            @if (!string.IsNullOrWhiteSpace(Model.Description))
+            {
+                <p>@Model.Description</p>
+            }
+
+            <div class="portfolio-detail-meta">
+                <div>
+                    <strong>Категория</strong>
+                    <span>@(Model.Category?.Name ?? "Не указана")</span>
+                </div>
+
+                <div>
+                    <strong>Фотограф</strong>
+                    <span>@(Model.Photographer?.FullName ?? "Не указан")</span>
+                </div>
+
+                <div>
+                    <strong>Студия</strong>
+                    <span>@(Model.Studio?.Name ?? "Без студии")</span>
+                </div>
+
+                <div>
+                    <strong>Дата съемки</strong>
+                    <span>
+                        @(Model.ShootingDate.HasValue
+                            ? Model.ShootingDate.Value.ToString("dd.MM.yyyy")
+                            : "Не указана")
+                    </span>
+                </div>
+            </div>
+
+            <div class="portfolio-detail-actions">
+                <a asp-controller="Booking" asp-action="Create" class="btn-main">
+                    Записаться на съемку
+                </a>
+
+                <a asp-controller="Portfolio" asp-action="Index" class="btn btn-outline-secondary">
+                    Назад к портфолио
+                </a>
+            </div>
+        </div>
+
+        <div class="portfolio-detail-cover">
+            @if (!string.IsNullOrWhiteSpace(Model.ImagePath))
+            {
+                <img src="@Model.ImagePath" alt="@Model.Title" />
+            }
+            else
+            {
+                <div class="portfolio-placeholder">PHOTO</div>
+            }
+        </div>
+    </div>
+
+    @if (Model.Images != null && Model.Images.Any())
+    {
+        <div class="portfolio-gallery-header">
+            <span class="section-label">Галерея</span>
+            <h2>Кадры серии</h2>
+        </div>
+
+        <div class="portfolio-detail-gallery">
+            @foreach (var image in Model.Images.OrderBy(i => i.SortOrder))
+            {
+                <figure class="portfolio-detail-photo">
+                    <img src="@image.ImagePath" alt="Фото из серии @Model.Title" />
+
+                    @if (!string.IsNullOrWhiteSpace(image.Caption))
+                    {
+                        <figcaption>@image.Caption</figcaption>
+                    }
+                </figure>
+            }
+        </div>
+    }
+    else
+    {
+        <div class="portfolio-empty">
+            <h2>Галерея скоро будет дополнена</h2>
+            <p>В этой серии фотографии появятся позже.</p>
+        </div>
+    }
+</section>

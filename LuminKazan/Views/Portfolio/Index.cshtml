@@ -1,0 +1,97 @@
+﻿@model List<LuminKazan.Models.PortfolioItem>
+
+@{
+    ViewData["Title"] = "Портфолио";
+}
+
+<section class="portfolio-page">
+    <div class="portfolio-header">
+        <span class="section-label">Портфолио</span>
+        <h1>Фотосерии</h1>
+        <p>
+            Подборка съемок в разных жанрах: индивидуальная, семейная, love story,
+            fashion, контентная и студийная фотография.
+        </p>
+    </div>
+
+    @if (Model.Any())
+    {
+        <div class="portfolio-grid">
+            @foreach (var item in Model)
+            {
+                <article class="portfolio-card">
+                    <a asp-controller="Portfolio"
+                       asp-action="Details"
+                       asp-route-id="@item.Id"
+                       class="portfolio-card-image">
+
+                        @if (!string.IsNullOrWhiteSpace(item.ImagePath))
+                        {
+                            <img src="@item.ImagePath" alt="@item.Title" />
+                        }
+                        else
+                        {
+                            <div class="portfolio-placeholder">PHOTO</div>
+                        }
+
+                        @if (item.IsFeatured)
+                        {
+                            <span class="portfolio-badge">Избранная серия</span>
+                        }
+                    </a>
+
+                    <div class="portfolio-card-content">
+                        <div class="portfolio-card-meta">
+                            <span>@(item.Category?.Name ?? "Фотосерия")</span>
+
+                            @if (item.ShootingDate.HasValue)
+                            {
+                                <span>@item.ShootingDate.Value.ToString("dd.MM.yyyy")</span>
+                            }
+                        </div>
+
+                        <h2>
+                            <a asp-controller="Portfolio"
+                               asp-action="Details"
+                               asp-route-id="@item.Id">
+                                @item.Title
+                            </a>
+                        </h2>
+
+                        @if (!string.IsNullOrWhiteSpace(item.Description))
+                        {
+                            <p>@item.Description</p>
+                        }
+
+                        <div class="portfolio-card-bottom">
+                            <span>@(item.Studio?.Name ?? "Без студии")</span>
+
+                            @if (item.Images != null && item.Images.Any())
+                            {
+                                <span>@item.Images.Count фото</span>
+                            }
+                            else
+                            {
+                                <span>Серия готовится</span>
+                            }
+                        </div>
+
+                        <a asp-controller="Portfolio"
+                           asp-action="Details"
+                           asp-route-id="@item.Id"
+                           class="portfolio-card-link">
+                            Смотреть серию
+                        </a>
+                    </div>
+                </article>
+            }
+        </div>
+    }
+    else
+    {
+        <div class="portfolio-empty">
+            <h2>Портфолио скоро будет обновлено</h2>
+            <p>Сейчас фотосерии готовятся к публикации.</p>
+        </div>
+    }
+</section>
