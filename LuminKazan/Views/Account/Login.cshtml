@@ -1,0 +1,58 @@
+﻿@model LuminKazan.ViewModels.LoginViewModel
+
+@{
+    ViewData["Title"] = "Вход";
+}
+
+<section class="account-page">
+    <div class="account-card">
+        <div class="account-header">
+            <span class="section-label">Администратор</span>
+            <h1>Вход в панель управления</h1>
+            <p>Введите email и пароль администратора для доступа к закрытой части сайта.</p>
+        </div>
+
+        <form asp-controller="Account" asp-action="Login" method="post" class="account-form">
+            @Html.AntiForgeryToken()
+
+            <input type="hidden" name="returnUrl" value="@ViewData["ReturnUrl"]" />
+
+            <div asp-validation-summary="ModelOnly" class="text-danger validation-summary"></div>
+
+            <div class="form-group">
+                <label asp-for="Email">Email</label>
+                <input asp-for="Email" class="form-control" placeholder="admin@luminkazan.ru" />
+                <span asp-validation-for="Email" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Password">Пароль</label>
+                <input asp-for="Password" class="form-control" placeholder="Введите пароль" />
+                <span asp-validation-for="Password" class="text-danger"></span>
+            </div>
+
+            <div class="account-check-row">
+                <label class="account-checkbox">
+                    <input asp-for="RememberMe" />
+                    <span>Запомнить меня</span>
+                </label>
+            </div>
+
+            <div class="account-actions">
+                <button type="submit" class="btn-main">
+                    Войти
+                </button>
+
+                <a asp-controller="Home" asp-action="Index" class="btn btn-outline-secondary">
+                    Вернуться на сайт
+                </a>
+            </div>
+        </form>
+    </div>
+</section>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
