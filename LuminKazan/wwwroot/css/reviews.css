@@ -1,0 +1,85 @@
+﻿.review-create-page,
+.review-thanks-page {
+    max-width: 920px;
+    margin: 0 auto;
+    padding: 90px 20px;
+}
+
+.review-create-header {
+    margin-bottom: 36px;
+}
+
+    .review-create-header h1,
+    .review-thanks-card h1 {
+        font-size: 58px;
+        line-height: 1.05;
+        margin: 0 0 18px;
+        color: #202020;
+    }
+
+    .review-create-header p,
+    .review-thanks-card p {
+        font-size: 18px;
+        line-height: 1.7;
+        color: #5f554f;
+        margin: 0;
+    }
+
+.review-form-wrapper,
+.review-thanks-card {
+    background: #ffffff;
+    border: 1px solid #ece3da;
+    border-radius: 30px;
+    padding: 40px;
+    box-shadow: 0 18px 45px rgba(0, 0, 0, 0.04);
+}
+
+.review-form {
+    display: grid;
+    gap: 22px;
+}
+
+    .review-form .form-group {
+        display: grid;
+        gap: 8px;
+    }
+
+    .review-form label {
+        font-weight: 700;
+        color: #202020;
+    }
+
+    .review-form .form-control {
+        min-height: 54px;
+        border-radius: 16px;
+        border: 1px solid #d8c9bd;
+        padding: 14px 16px;
+    }
+
+    .review-form textarea.form-control {
+        min-height: 170px;
+    }
+
+.review-form-actions {
+    display: flex;
+    gap: 14px;
+    flex-wrap: wrap;
+    margin-top: 8px;
+}
+
+@media (max-width: 760px) {
+    .review-create-page,
+    .review-thanks-page {
+        padding: 56px 16px;
+    }
+
+    .review-create-header h1,
+    .review-thanks-card h1 {
+        font-size: 40px;
+    }
+
+    .review-form-wrapper,
+    .review-thanks-card {
+        padding: 28px;
+    }
+}
