@@ -1,0 +1,146 @@
+﻿@model IEnumerable<LuminKazan.Models.Review>
+
+@{
+    ViewData["Title"] = "Отзывы";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+
+    var currentStatus = ViewBag.CurrentStatus as string ?? "all";
+}
+
+<section class="admin-page">
+    <div class="admin-page__header">
+        <div>
+            <span class="section-label">Отзывы</span>
+            <h1>Отзывы клиентов</h1>
+            <p>
+                Управление отзывами, которые пользователи оставляют на сайте.
+                Опубликованные отзывы отображаются на главной странице.
+            </p>
+        </div>
+    </div>
+
+    <div class="admin-filters">
+        <a asp-controller="AdminReviews"
+           asp-action="Index"
+           asp-route-status=""
+           class="admin-filter @(currentStatus == "all" ? "active" : "")">
+            Все
+        </a>
+
+        <a asp-controller="AdminReviews"
+           asp-action="Index"
+           asp-route-status="published"
+           class="admin-filter @(currentStatus == "published" ? "active" : "")">
+            Опубликованные
+        </a>
+
+        <a asp-controller="AdminReviews"
+           asp-action="Index"
+           asp-route-status="hidden"
+           class="admin-filter @(currentStatus == "hidden" ? "active" : "")">
+            Скрытые
+        </a>
+    </div>
+
+    @if (!Model.Any())
+    {
+        <div class="admin-empty">
+            <h2>Отзывов пока нет</h2>
+            <p>Когда пользователи оставят отзывы, они появятся в этом разделе.</p>
+        </div>
+    }
+    else
+    {
+        <div class="admin-review-list">
+            @foreach (var review in Model)
+            {
+                <article class="admin-review-card">
+                    <div class="admin-review-card__top">
+                        <div>
+                            <h2>@review.ClientName</h2>
+
+                            <div class="admin-review-card__stars">
+                                @for (var i = 1; i <= 5; i++)
+                                {
+                                    if (i <= review.Rating)
+                                    {
+                                        <span>★</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="muted">★</span>
+                                    }
+                                }
+                            </div>
+                        </div>
+
+                        <div class="admin-review-card__status">
+                            @if (review.IsPublished)
+                            {
+                                <span class="status-badge status-badge--published">
+                                    Опубликован
+                                </span>
+                            }
+                            else
+                            {
+                                <span class="status-badge status-badge--hidden">
+                                    Скрыт
+                                </span>
+                            }
+
+                            <span class="admin-review-card__date">
+                                @review.CreatedAt.ToString("dd.MM.yyyy HH:mm")
+                            </span>
+                        </div>
+                    </div>
+
+                    <p class="admin-review-card__text">
+                        @review.Text
+                    </p>
+
+                    <div class="admin-review-card__actions">
+                        @if (review.IsPublished)
+                        {
+                            <form asp-controller="AdminReviews"
+                                  asp-action="Hide"
+                                  method="post">
+                                @Html.AntiForgeryToken()
+
+                                <input type="hidden" name="id" value="@review.Id" /><button type="submit" class="btn-secondary">
+                                    Скрыть
+                                </button>
+                            </form>
+                        }
+                        else
+                        {
+                            <form asp-controller="AdminReviews"
+                                  asp-action="Publish"
+                                  method="post">
+                                @Html.AntiForgeryToken()
+
+                                <input type="hidden" name="id" value="@review.Id" />
+
+                                <button type="submit" class="btn-main">
+                                    Опубликовать
+                                </button>
+                            </form>
+                        }
+
+                        <form asp-controller="AdminReviews"
+                              asp-action="Delete"
+                              method="post"
+                              onsubmit="return confirm('Удалить отзыв? Это действие нельзя отменить.');">
+                            @Html.AntiForgeryToken()
+
+                            <input type="hidden" name="id" value="@review.Id" />
+
+                            <button type="submit" class="btn-danger">
+                                Удалить
+                            </button>
+                        </form>
+                    </div>
+                </article>
+            }
+        </div>
+    }
+</section>
