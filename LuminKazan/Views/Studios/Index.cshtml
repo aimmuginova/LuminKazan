@@ -1,0 +1,149 @@
+﻿@model List<LuminKazan.Models.Studio>
+
+@{
+    ViewData["Title"] = "Студии";
+
+    var kazanStudiosMapQuery = Uri.EscapeDataString("фотостудии Казань");
+    var kazanStudiosMapUrl = $"https://yandex.ru/map-widget/v1/?mode=search&text={kazanStudiosMapQuery}";
+    var kazanStudiosExternalUrl = $"https://yandex.ru/maps/?text={kazanStudiosMapQuery}";
+}
+
+<section class="studios-page">
+    <div class="studios-header">
+        <span class="section-label">Студии</span>
+        <h1>Фотостудии Казани</h1>
+        <p>
+            Подборка пространств для портретных, семейных, fashion и контент-съемок.
+            В карточках ниже собраны студии, которые подходят для разных визуальных задач:
+            от минималистичных портретов до коммерческого контента.
+        </p>
+    </div>
+
+    <div class="studios-map-section">
+        <div class="studios-map-content">
+            <span class="section-label">Карта</span>
+            <h2>Больше студий на карте</h2>
+            <p>
+                Карта показывает более широкий список фотостудий Казани. Карточки ниже -
+                это выбранные пространства, добавленные в подборку сайта.
+            </p>
+
+            <a href="@kazanStudiosExternalUrl"
+               target="_blank"
+               rel="noopener"
+               class="btn btn-outline-secondary studios-map-link">
+                Открыть в Яндекс.Картах
+            </a>
+        </div>
+
+        <div class="studios-map-frame">
+            <iframe src="@kazanStudiosMapUrl"
+                    width="100%"
+                    height="420"
+                    frameborder="0"
+                    allowfullscreen="true">
+            </iframe>
+        </div>
+    </div>
+
+    @if (Model.Any())
+    {
+        <div class="studios-section-heading">
+            <span class="section-label">Подборка</span>
+            <h2>Рекомендуемые пространства</h2>
+            <p>
+                Эти студии добавлены в каталог вручную. Администратор может менять описание,
+                адрес, параметры, стоимость и обложку каждой студии.
+            </p>
+        </div>
+
+        <div class="studios-grid">
+            @foreach (var studio in Model)
+            {
+                var studioMapQuery = Uri.EscapeDataString($"{studio.Name}, {studio.Address}, Казань");
+                var studioMapUrl = $"https://yandex.ru/maps/?text={studioMapQuery}";
+                var priceLabel = studio.PricePerHour > 0
+                ? $"{studio.PricePerHour:N0} ₽/час"
+                : "Стоимость уточняется";
+
+                <article class="studio-card">
+                    <a asp-controller="Studios"
+                       asp-action="Details"
+                       asp-route-id="@studio.Id"
+                       class="studio-card-image">
+
+                        @if (!string.IsNullOrWhiteSpace(studio.ImagePath))
+                        {
+                            <img src="@studio.ImagePath"
+                                 alt="@studio.Name"
+                                 onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
+
+                            <div class="studio-placeholder studio-placeholder-hidden">
+                                Фото скоро будет добавлено
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="studio-placeholder">
+                                Фото скоро будет добавлено
+                            </div>
+                        }
+                    </a>
+
+                    <div class="studio-card-content">
+                        <div class="studio-card-meta">
+                            <span>@(studio.District ?? "Казань")</span>
+                            <span>@priceLabel</span>
+                        </div>
+
+                        <h2>
+                            <a asp-controller="Studios"
+                               asp-action="Details"
+                               asp-route-id="@studio.Id">
+                                @studio.Name
+                            </a>
+                        </h2>
+
+                        @if (!string.IsNullOrWhiteSpace(studio.Description))
+                        {
+                            <p>@studio.Description</p>
+                        }
+
+                        <div class="studio-features">
+                            <span>@studio.HallCount зал(а)</span>
+                            <span>@(studio.HasNaturalLight ? "Естественный свет" : "Искусственный свет")</span>
+                            <span>@(studio.InteriorStyle ?? "Интерьер")</span>
+                        </div>
+
+                        <div class="studio-address">
+                            @studio.Address
+                        </div>
+
+                        <div class="studio-card-actions">
+                            <a asp-controller="Studios"
+                               asp-action="Details"
+                               asp-route-id="@studio.Id"
+                               class="btn-main">
+                                Подробнее
+                            </a>
+
+                            <a href="@studioMapUrl"
+                               target="_blank"
+                               rel="noopener"
+                               class="btn btn-outline-secondary">
+                                На карте
+                            </a>
+                        </div>
+                    </div>
+                </article>
+            }
+        </div>
+    }
+    else
+    {
+        <div class="studio-empty">
+            <h2>Подборка студий готовится</h2>
+            <p>Скоро здесь появятся пространства для съемок в Казани.</p>
+        </div>
+    }
+</section>

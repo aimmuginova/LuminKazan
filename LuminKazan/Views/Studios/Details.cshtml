@@ -1,0 +1,116 @@
+﻿@model LuminKazan.Models.Studio
+
+@{
+    ViewData["Title"] = Model.Name;
+
+    var studioMapQuery = Uri.EscapeDataString($"{Model.Name}, {Model.Address}, Казань");
+    var studioMapWidgetUrl = $"https://yandex.ru/map-widget/v1/?mode=search&text={studioMapQuery}";
+    var studioMapExternalUrl = $"https://yandex.ru/maps/?text={studioMapQuery}";
+
+    var priceLabel = Model.PricePerHour > 0
+        ? $"{Model.PricePerHour:N0} ₽/час"
+        : "Стоимость уточняется";
+}
+
+<section class="studio-detail-page">
+    <div class="studio-detail-hero">
+        <div class="studio-detail-info">
+            <span class="section-label">Студия</span>
+            <h1>@Model.Name</h1>
+
+            @if (!string.IsNullOrWhiteSpace(Model.Description))
+            {
+                <p>@Model.Description</p>
+            }
+
+            <div class="studio-detail-meta">
+                <div>
+                    <strong>Район</strong>
+                    <span>@(Model.District ?? "Казань")</span>
+                </div>
+
+                <div>
+                    <strong>Адрес</strong>
+                    <span>@Model.Address</span>
+                </div>
+
+                <div>
+                    <strong>Стоимость</strong>
+                    <span>@priceLabel</span>
+                </div>
+
+                <div>
+                    <strong>Залы</strong>
+                    <span>@Model.HallCount</span>
+                </div>
+
+                <div>
+                    <strong>Свет</strong>
+                    <span>@(Model.HasNaturalLight ? "Естественный свет" : "Искусственный свет")</span>
+                </div>
+
+                <div>
+                    <strong>Интерьер</strong>
+                    <span>@(Model.InteriorStyle ?? "Не указан")</span>
+                </div>
+            </div>
+
+            <div class="studio-detail-actions">
+                <a asp-controller="Booking" asp-action="Create" class="btn-main">
+                    Записаться на съемку
+                </a>
+
+                <a href="@studioMapExternalUrl"
+                   target="_blank"
+                   rel="noopener"
+                   class="btn btn-outline-secondary">
+                    Открыть на карте
+                </a>
+
+                <a asp-controller="Studios"
+                   asp-action="Index"
+                   class="btn btn-outline-secondary">
+                    Назад к студиям
+                </a>
+            </div>
+        </div>
+
+        <div class="studio-detail-image">
+            @if (!string.IsNullOrWhiteSpace(Model.ImagePath))
+            {
+                <img src="@Model.ImagePath"
+                     alt="@Model.Name"
+                     onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
+
+                <div class="studio-placeholder studio-placeholder-hidden">
+                    Фото скоро будет добавлено
+                </div>
+            }
+            else
+            {
+                <div class="studio-placeholder">
+                    Фото скоро будет добавлено
+                </div>
+            }
+        </div>
+    </div>
+
+    <div class="studio-detail-map-section">
+        <div class="studio-detail-map-header">
+            <span class="section-label">Локация</span>
+            <h2>Расположение</h2>
+            <p>
+                Откройте карту, чтобы посмотреть маршрут, ближайшие ориентиры и расположение студии в городе.
+            </p>
+        </div>
+
+        <div class="studio-detail-map">
+            <iframe src="@studioMapWidgetUrl"
+                    width="100%"
+                    height="460"
+                    frameborder="0"
+                    allowfullscreen="true">
+            </iframe>
+        </div>
+    </div>
+</section>
