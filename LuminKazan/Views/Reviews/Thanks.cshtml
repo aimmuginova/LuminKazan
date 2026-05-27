@@ -1,0 +1,138 @@
+﻿@{
+    ViewData["Title"] = "Спасибо за отзыв";
+}
+
+<style>
+    .review-thanks-page {
+        width: min(100%, 860px);
+        margin: 0 auto;
+        padding: 92px 24px 110px;
+    }
+
+    .review-thanks-card {
+        padding: 42px;
+        background: #ffffff;
+        border: 1px solid #eaded4;
+        border-radius: 28px;
+        box-shadow: 0 18px 48px rgba(31, 28, 25, 0.05);
+        text-align: center;
+    }
+
+    .review-thanks-eyebrow {
+        display: block;
+        margin-bottom: 12px;
+        color: #a46b47;
+        font-size: 12px;
+        line-height: 1.2;
+        font-weight: 800;
+        letter-spacing: 0.22em;
+        text-transform: uppercase;
+    }
+
+    .review-thanks-title {
+        margin: 0 0 14px;
+        color: #1f1c19;
+        font-size: 44px;
+        line-height: 1.04;
+        font-weight: 850;
+        letter-spacing: -0.035em;
+    }
+
+    .review-thanks-text {
+        max-width: 620px;
+        margin: 0 auto 28px;
+        color: #6b6057;
+        font-size: 18px;
+        line-height: 1.5;
+        font-weight: 400;
+    }
+
+    .review-thanks-actions {
+        display: flex;
+        justify-content: center;
+        gap: 12px;
+        flex-wrap: wrap;
+    }
+
+    .review-thanks-button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 48px;
+        padding: 0 24px;
+        border-radius: 999px;
+        border: 1px solid #dfcfc1;
+        background: #fffaf5;
+        color: #1f1c19 !important;
+        font-size: 15px;
+        line-height: 1;
+        font-weight: 800;
+        text-decoration: none !important;
+        white-space: nowrap;
+    }
+
+        .review-thanks-button.primary {
+            border-color: #1f1c19;
+            background: #1f1c19;
+            color: #ffffff !important;
+        }
+
+        .review-thanks-button:hover {
+            background: #f7eee6;
+            color: #1f1c19 !important;
+            text-decoration: none !important;
+        }
+
+        .review-thanks-button.primary:hover {
+            background: #111111;
+            color: #ffffff !important;
+        }
+
+    @@media (max-width: 720px) {
+        .review-thanks-page {
+            padding: 64px 18px 80px;
+        }
+
+        .review-thanks-card {
+            padding: 30px 22px;
+        }
+
+        .review-thanks-title {
+            font-size: 34px;
+        }
+
+        .review-thanks-text {
+            font-size: 16px;
+        }
+
+        .review-thanks-button {
+            width: 100%;
+        }
+    }
+</style>
+
+<div class="review-thanks-page">
+    <section class="review-thanks-card">
+        <span class="review-thanks-eyebrow">Отзыв отправлен</span>
+
+        <h1 class="review-thanks-title">Спасибо за отзыв</h1>
+
+        <p class="review-thanks-text">
+            Отзыв сохранен и будет доступен после публикации.
+        </p>
+
+        <div class="review-thanks-actions">
+            <a asp-controller="Home"
+               asp-action="Index"
+               class="review-thanks-button primary">
+                На главную
+            </a>
+
+            <a asp-controller="Reviews"
+               asp-action="Create"
+               class="review-thanks-button">
+                Оставить еще один отзыв
+            </a>
+        </div>
+    </section>
+</div>

@@ -1,0 +1,243 @@
+﻿@model LuminKazan.Models.Review
+
+@{
+    ViewData["Title"] = "Оставить отзыв";
+}
+
+<style>
+    .review-page {
+        width: min(100%, 980px);
+        margin: 0 auto;
+        padding: 72px 24px 90px;
+    }
+
+    .review-header {
+        margin-bottom: 28px;
+    }
+
+    .review-eyebrow {
+        display: block;
+        margin-bottom: 12px;
+        color: #a46b47;
+        font-size: 12px;
+        line-height: 1.2;
+        font-weight: 800;
+        letter-spacing: 0.22em;
+        text-transform: uppercase;
+    }
+
+    .review-title {
+        margin: 0 0 14px;
+        color: #1f1c19;
+        font-size: 48px;
+        line-height: 1.02;
+        font-weight: 850;
+        letter-spacing: -0.035em;
+    }
+
+    .review-description {
+        max-width: 720px;
+        margin: 0;
+        color: #6b6057;
+        font-size: 18px;
+        line-height: 1.5;
+        font-weight: 400;
+    }
+
+    .review-card {
+        padding: 32px;
+        background: #ffffff;
+        border: 1px solid #eaded4;
+        border-radius: 24px;
+        box-shadow: 0 18px 48px rgba(31, 28, 25, 0.05);
+    }
+
+    .review-form-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 22px;
+    }
+
+    .review-form-group {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+
+        .review-form-group.full {
+            grid-column: 1 / -1;
+        }
+
+    .review-label {
+        color: #1f1c19;
+        font-size: 15px;
+        font-weight: 800;
+    }
+
+    .review-control {
+        width: 100%;
+        min-height: 52px;
+        padding: 0 18px;
+        border: 1px solid #dfcfc1;
+        border-radius: 16px;
+        background: #fffaf5;
+        color: #1f1c19;
+        font-size: 16px;
+        font-weight: 500;
+        outline: none;
+    }
+
+    textarea.review-control {
+        min-height: 150px;
+        padding-top: 16px;
+        resize: vertical;
+    }
+
+    .review-actions {
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+        margin-top: 28px;
+    }
+
+    .review-button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 48px;
+        padding: 0 24px;
+        border-radius: 999px;
+        border: 1px solid #dfcfc1;
+        background: #fffaf5;
+        color: #1f1c19 !important;
+        font-size: 15px;
+        line-height: 1;
+        font-weight: 800;
+        text-decoration: none !important;
+        white-space: nowrap;
+        cursor: pointer;
+    }
+
+        .review-button.primary {
+            border-color: #1f1c19;
+            background: #1f1c19;
+            color: #ffffff !important;
+        }
+
+        .review-button:hover {
+            background: #f7eee6;
+            color: #1f1c19 !important;
+            text-decoration: none !important;
+        }
+
+        .review-button.primary:hover {
+            background: #111111;
+            color: #ffffff !important;
+        }
+
+    .text-danger {
+        color: #cf4e4e;
+        font-size: 14px;
+        font-weight: 600;
+    }
+
+    .validation-summary {
+        margin-bottom: 18px;
+    }
+
+    @@media (max-width: 760px) {
+        .review-page {
+            padding: 52px 18px 70px;
+        }
+
+        .review-title {
+            font-size: 36px;
+        }
+
+        .review-description {
+            font-size: 16px;
+        }
+
+        .review-card {
+            padding: 24px;
+        }
+
+        .review-form-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .review-button {
+            width: 100%;
+        }
+    }
+</style>
+
+<div class="review-page">
+    <section class="review-header">
+        <span class="review-eyebrow">Отзывы</span>
+
+        <h1 class="review-title">Оставить отзыв</h1>
+
+        <p class="review-description">
+            Поделитесь впечатлением о съемке. После проверки отзыв может быть размещен на главной странице сайта.
+        </p>
+    </section>
+
+    <form asp-controller="Reviews"
+          asp-action="Create"
+          method="post"
+          class="review-card">
+
+        @Html.AntiForgeryToken()
+
+        <div asp-validation-summary="ModelOnly" class="text-danger validation-summary"></div>
+
+        <div class="review-form-grid">
+            <div class="review-form-group">
+                <label asp-for="ClientName" class="review-label">Имя</label>
+                <input asp-for="ClientName"
+                       class="review-control"
+                       placeholder="Введите ваше имя" />
+                <span asp-validation-for="ClientName" class="text-danger"></span>
+            </div>
+
+            <div class="review-form-group">
+                <label asp-for="Rating" class="review-label">Оценка</label>
+                <select asp-for="Rating" class="review-control">
+                    <option value="5">5 - отлично</option>
+                    <option value="4">4 - хорошо</option>
+                    <option value="3">3 - нормально</option>
+                    <option value="2">2 - не понравилось</option>
+                    <option value="1">1 - плохо</option>
+                </select>
+                <span asp-validation-for="Rating" class="text-danger"></span>
+            </div>
+
+            <div class="review-form-group full">
+                <label asp-for="Text" class="review-label">Отзыв</label>
+                <textarea asp-for="Text"
+                          class="review-control"
+                          placeholder="Расскажите, как прошла съемка и что понравилось в результате"></textarea>
+                <span asp-validation-for="Text" class="text-danger"></span>
+            </div>
+        </div>
+
+        <div class="review-actions">
+            <button type="submit" class="review-button primary">
+                Отправить отзыв
+            </button>
+
+            <a asp-controller="Home"
+               asp-action="Index"
+               class="review-button">
+                На главную
+            </a>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
