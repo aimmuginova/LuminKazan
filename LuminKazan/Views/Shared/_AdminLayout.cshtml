@@ -1,0 +1,159 @@
+﻿@{
+    var title = ViewData["Title"] == null
+        ? "LuminKazan Admin"
+        : $"{ViewData["Title"]} - LuminKazan Admin";
+
+    var currentController = ViewContext.RouteData.Values["controller"]?.ToString() ?? "";
+    var currentAction = ViewContext.RouteData.Values["action"]?.ToString() ?? "";
+
+    string NavClass(string controllerName, string actionName = "")
+    {
+        var controllerMatches = string.Equals(currentController, controllerName, StringComparison.OrdinalIgnoreCase);
+
+        var actionMatches = string.IsNullOrWhiteSpace(actionName)
+            || string.Equals(currentAction, actionName, StringComparison.OrdinalIgnoreCase);
+
+        return controllerMatches && actionMatches
+            ? "admin-nav__link is-active"
+            : "admin-nav__link";
+    }
+
+    string AdminSectionClass(params string[] actionNames)
+    {
+        if (!string.Equals(currentController, "Admin", StringComparison.OrdinalIgnoreCase))
+        {
+            return "admin-nav__link";
+        }
+
+        foreach (var actionName in actionNames)
+        {
+            if (string.Equals(currentAction, actionName, StringComparison.OrdinalIgnoreCase))
+            {
+                return "admin-nav__link is-active";
+            }
+        }
+
+        return "admin-nav__link";
+    }
+}
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>@title</title>
+
+    <link rel="stylesheet" href="~/css/admin.css" asp-append-version="true" />
+</head>
+
+<body class="admin-body">
+    <header class="admin-header">
+        <div class="admin-header__inner">
+            <a asp-controller="Admin" asp-action="Index" class="admin-logo">
+                LuminKazan
+            </a>
+
+            <nav class="admin-nav" aria-label="Навигация администратора">
+                <a asp-controller="Admin"
+                   asp-action="Index"
+                   class="@NavClass("Admin", "Index")">
+                    Панель
+                </a>
+
+                <a asp-controller="AdminHome"
+                   asp-action="Edit"
+                   class="@NavClass("AdminHome", "Edit")">
+                    Главная
+                </a>
+
+                <a asp-controller="AdminSchedule"
+                   asp-action="Index"
+                   class="@NavClass("AdminSchedule", "Index")">
+                    Расписание
+                </a>
+
+                <a asp-controller="Admin"
+                   asp-action="Bookings"
+                   class="@AdminSectionClass("Bookings", "EditBooking", "DeleteBooking")">
+                    Заявки
+                </a>
+
+                <a asp-controller="Admin"
+                   asp-action="Services"
+                   class="@AdminSectionClass("Services", "CreateService", "EditService", "DeleteService")">
+                    Услуги
+                </a>
+
+                <a asp-controller="Admin"
+                   asp-action="Studios"
+                   class="@AdminSectionClass("Studios", "CreateStudio", "EditStudio", "DeleteStudio")">
+                    Студии
+                </a>
+
+                <a asp-controller="Admin"
+                   asp-action="PortfolioItems"
+                   class="@AdminSectionClass("PortfolioItems", "CreatePortfolioItem", "EditPortfolioItem", "DeletePortfolioItem", "PortfolioImages", "CreatePortfolioImage", "EditPortfolioImage", "DeletePortfolioImage")">
+                    Портфолио
+                </a>
+
+                <a asp-controller="Admin"
+                   asp-action="Reviews"
+                   class="@AdminSectionClass("Reviews", "PublishReview", "HideReview", "DeleteReview")">
+                    Отзывы
+                </a>
+
+                <a asp-controller="Home"
+                   asp-action="Index"
+                   class="admin-nav__link">
+                    На сайт
+                </a>
+
+                <form asp-controller="Account"
+                      asp-action="Logout"
+                      method="post"
+                      class="admin-logout-form">
+                    @Html.AntiForgeryToken()
+
+                    <button type="submit" class="admin-nav__link admin-logout-button">
+                        Выход
+                    </button>
+                </form>
+            </nav>
+        </div>
+    </header>
+
+    <main class="admin-main">
+        @RenderBody()
+    </main>
+
+    <footer class="admin-footer">
+        <div class="admin-footer__inner">
+            <div>
+                <h2 class="admin-footer__title">LuminKazan</h2>
+                <p class="admin-footer__text">
+                    Панель управления сайтом фотографа.
+                </p>
+            </div>
+
+            <nav class="admin-footer__nav" aria-label="Навигация в подвале администратора">
+                <a asp-controller="Admin" asp-action="Bookings">Заявки</a>
+                <a asp-controller="Admin" asp-action="Services">Услуги</a>
+                <a asp-controller="Admin" asp-action="Studios">Студии</a>
+                <a asp-controller="Admin" asp-action="PortfolioItems">Портфолио</a>
+                <a asp-controller="Admin" asp-action="Reviews">Отзывы</a>
+            </nav>
+
+            <p class="admin-footer__copyright">
+                © 2026 LuminKazan. Все права защищены.
+            </p>
+        </div>
+    </footer>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

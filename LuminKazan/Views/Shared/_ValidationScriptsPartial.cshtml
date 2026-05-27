@@ -1,0 +1,26 @@
+﻿<script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+<script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
+
+<script>
+    $.validator.methods.number = function (value, element) {
+        if (this.optional(element)) {
+            return true;
+        }
+
+        value = value.replace(/\s/g, "");
+
+        return /^-?\d+([,.]\d+)?$/.test(value);
+    };
+
+    $.validator.methods.range = function (value, element, param) {
+        if (this.optional(element)) {
+            return true;
+        }
+
+        value = value.replace(/\s/g, "").replace(",", ".");
+
+        var numberValue = parseFloat(value);
+
+        return numberValue >= param[0] && numberValue <= param[1];
+    };
+</script>
