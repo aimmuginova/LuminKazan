@@ -1,0 +1,105 @@
+﻿@model LuminKazan.ViewModels.BookingFormViewModel
+
+@{
+    ViewData["Title"] = "Запись на съемку";
+}
+
+<section class="booking-page">
+    <div class="booking-header">
+        <span class="section-label">Запись</span>
+
+        <h1>Записаться на съемку</h1>
+
+        <p>
+            Оставьте заявку, чтобы согласовать формат съемки, дату, время и подходящую студию в Казани.
+        </p>
+    </div>
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="booking-success">
+            @TempData["SuccessMessage"]
+        </div>
+    }
+
+    <div class="booking-form-wrapper">
+        <form asp-controller="Booking" asp-action="Create" method="post" class="booking-form">
+            @Html.AntiForgeryToken()
+
+            <div asp-validation-summary="ModelOnly" class="text-danger validation-summary"></div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label asp-for="Booking.ClientName">Имя</label>
+                    <input asp-for="Booking.ClientName" class="form-control" placeholder="Введите ваше имя" />
+                    <span asp-validation-for="Booking.ClientName" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Booking.Phone">Телефон</label>
+                    <input asp-for="Booking.Phone" class="form-control" placeholder="+7 (___) ___-__-__" />
+                    <span asp-validation-for="Booking.Phone" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label asp-for="Booking.Email">Email</label>
+                    <input asp-for="Booking.Email" class="form-control" placeholder="example@mail.com" />
+                    <span asp-validation-for="Booking.Email" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Booking.BookingDate">Дата съемки</label>
+                    <input asp-for="Booking.BookingDate" type="date" asp-format="{0:yyyy-MM-dd}" class="form-control" />
+                    <span asp-validation-for="Booking.BookingDate" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label asp-for="BookingTime">Время начала</label>
+                    <select asp-for="BookingTime" asp-items="Model.TimeSlots" class="form-control">
+                        <option value="">Выберите время</option>
+                    </select>
+                    <span asp-validation-for="BookingTime" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Booking.ServiceId">Услуга</label>
+                    <select asp-for="Booking.ServiceId" asp-items="Model.Services" class="form-control">
+                        <option value="">Выберите услугу</option>
+                    </select>
+                    <span asp-validation-for="Booking.ServiceId" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label asp-for="Booking.StudioId">Студия</label>
+                    <select asp-for="Booking.StudioId" asp-items="Model.Studios" class="form-control"></select>
+                    <span asp-validation-for="Booking.StudioId" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Booking.Comment">Комментарий</label>
+                <textarea asp-for="Booking.Comment"
+                          class="form-control"
+                          rows="5"
+                          placeholder="Например: хочу съемку в минималистичном стиле, ближе к вечеру"></textarea>
+                <span asp-validation-for="Booking.Comment" class="text-danger"></span>
+            </div>
+
+            <button type="submit" class="btn-main">
+                Отправить заявку
+            </button>
+        </form>
+    </div>
+</section>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
