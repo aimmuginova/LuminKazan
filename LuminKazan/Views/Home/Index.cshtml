@@ -1,0 +1,281 @@
+﻿@model LuminKazan.ViewModels.HomeViewModel
+
+@{
+    ViewData["Title"] = "Главная";
+
+    var photographer = Model.Photographer;
+
+    var profileImagePath = !string.IsNullOrWhiteSpace(photographer?.ProfileImagePath)
+        ? photographer.ProfileImagePath
+        : "/images/portfolio/portfolio1.jpg";
+
+    var photographerName = !string.IsNullOrWhiteSpace(photographer?.FullName)
+        ? photographer.FullName
+        : "LuminKazan";
+}
+
+<section class="hero-section">
+    <div class="hero-content">
+        <div class="hero-text">
+            <span class="hero-subtitle">Фотограф в Казани</span>
+
+            <h1>@photographerName</h1>
+
+            <p class="hero-description">
+                @(photographer?.Specialization ?? "Современная художественная и коммерческая фотография")
+            </p>
+
+            <p class="hero-bio">
+                @(photographer?.Biography ?? "Эстетичные, живые и эмоциональные кадры для людей, брендов и особенных моментов.")
+            </p>
+
+            <div class="hero-buttons">
+                <a asp-controller="Booking" asp-action="Create" class="btn-main">
+                    Записаться на съемку
+                </a>
+
+                <a asp-controller="Studios" asp-action="Index" class="btn-secondary">
+                    Выбрать студию
+                </a>
+            </div>
+        </div>
+
+        <div class="hero-image-block">
+            <div class="hero-image-placeholder">
+                <img src="@profileImagePath" alt="@photographerName" />
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="about-section">
+    <div class="section-header">
+        <span class="section-label">О проекте</span>
+
+        <h2>Фотосъемка в Казани</h2>
+
+        <p>
+            Индивидуальные, семейные, студийные и коммерческие съемки с подбором подходящего формата, локации и студии.
+        </p>
+    </div>
+</section>
+
+<section id="services" class="services-section">
+    <div class="section-header">
+        <span class="section-label">Услуги</span>
+
+        <h2>Форматы съемки</h2>
+
+        <p>
+            Короткие съемки, индивидуальные портреты, love story, семейные истории, контент для бренда и бизнес-портреты.
+        </p>
+    </div>
+
+    <div class="cards-grid">
+        @foreach (var service in Model.Services)
+        {
+            <article class="info-card">
+                <div class="card-meta">
+                    <span>@service.DurationMinutes мин</span>
+                    <span>@service.Price.ToString("N0") ₽</span>
+                </div>
+
+                <h3>@service.Title</h3>
+
+                <p>@service.Description</p>
+
+                <div class="card-extra">
+                    <p>
+                        <span>Ретушь</span>
+                        <strong>@service.RetouchedPhotosCount фото</strong>
+                    </p>
+
+                    <p>
+                        <span>Все фото</span>
+                        <strong>@service.AllPhotosCount фото</strong>
+                    </p>
+
+                    <p>
+                        <span>Готовность</span>
+                        <strong>@service.DeliveryDays дней</strong>
+                    </p>
+                </div>
+
+                <div class="card-actions">
+                    <a asp-controller="Services"
+                       asp-action="Details"
+                       asp-route-id="@service.Id"
+                       class="btn-secondary">
+                        Подробнее
+                    </a>
+
+                    <a asp-controller="Booking"
+                       asp-action="Create"
+                       asp-route-serviceId="@service.Id"
+                       class="btn-main">
+                        Записаться
+                    </a>
+                </div>
+            </article>
+        }
+    </div>
+</section>
+
+<section id="studios" class="studios-section">
+    <div class="section-header">
+        <span class="section-label">Студии</span>
+
+        <h2>Фотостудии Казани</h2>
+
+        <p>
+            Пространства для портретных, семейных, fashion и контент-съемок.
+        </p>
+    </div>
+
+    <div class="cards-grid">
+        @foreach (var studio in Model.Studios)
+        {
+            <article class="info-card">
+                <div class="card-meta">
+                    <span>@studio.District</span>
+                    <span>@studio.PricePerHour.ToString("N0") ₽/час</span>
+                </div>
+
+                <h3>@studio.Name</h3>
+
+                <p>@studio.Description</p>
+
+                <div class="card-extra">
+                    <p>
+                        <span>Адрес</span>
+                        <strong>@studio.Address</strong>
+                    </p>
+
+                    <p>
+                        <span>Стиль</span>
+                        <strong>@studio.InteriorStyle</strong>
+                    </p>
+
+                    <p>
+                        <span>Залы</span>
+                        <strong>@studio.HallCount</strong>
+                    </p>
+                </div>
+
+                <div class="card-actions">
+                    <a asp-controller="Studios"
+                       asp-action="Details"
+                       asp-route-id="@studio.Id"
+                       class="btn-secondary">
+                        Подробнее
+                    </a>
+
+                    <a asp-controller="Booking"
+                       asp-action="Create"
+                       asp-route-studioId="@studio.Id"
+                       class="btn-main">
+                        Записаться
+                    </a>
+                </div>
+            </article>
+        }
+    </div>
+
+    <div class="section-actions">
+        <a asp-controller="Studios" asp-action="Index" class="btn-secondary">
+            Смотреть все студии
+        </a>
+    </div>
+</section>
+
+@if (Model.Reviews.Any())
+{
+    <section id="reviews" class="reviews-section">
+        <div class="section-header">
+            <span class="section-label">Отзывы</span>
+
+            <h2>Отзывы клиентов</h2>
+
+            <p>
+                Впечатления клиентов о съемках, атмосфере и результате.
+            </p>
+        </div>
+
+        <div class="cards-grid">
+            @foreach (var review in Model.Reviews)
+            {
+                <article class="info-card">
+                    <div class="card-meta">
+                        <span>@review.CreatedAt.ToString("dd.MM.yyyy")</span>
+                        <span>@review.Rating / 5</span>
+                    </div>
+
+                    <h3>@review.ClientName</h3>
+
+                    <p>@review.Text</p>
+                </article>
+            }
+        </div>
+
+        <div class="section-actions">
+            <a asp-controller="Reviews"
+               asp-action="Create"
+               class="btn-secondary">
+                Оставить отзыв
+            </a>
+        </div>
+    </section>
+}
+else
+{
+    <section id="reviews" class="reviews-section">
+        <div class="section-header">
+            <span class="section-label">Отзывы</span>
+
+            <h2>Отзывы клиентов</h2>
+
+            <p>
+                Здесь будут опубликованы отзывы после первых подтвержденных публикаций.
+            </p>
+        </div>
+
+        <div class="section-actions">
+            <a asp-controller="Reviews"
+               asp-action="Create"
+               class="btn-secondary">
+                Оставить отзыв
+            </a>
+        </div>
+    </section>
+}
+
+<section id="booking" class="cta-section">
+    <div class="cta-box">
+        <h2>Запись на съемку</h2>
+
+        <p>
+            Оставьте заявку, чтобы согласовать формат съемки, дату, локацию и подходящую студию.
+        </p>
+
+        <div class="booking-preview">
+            <div class="booking-item">
+                <span>Формат</span>
+                <strong>Индивидуальная / Love Story / Семейная / Контент</strong>
+            </div>
+
+            <div class="booking-item">
+                <span>Локация</span>
+                <strong>Студия или выездная съемка</strong>
+            </div>
+
+            <div class="booking-item">
+                <span>Готовность</span>
+                <strong>От 5 до 10 дней</strong>
+            </div>
+        </div>
+
+        <a asp-controller="Booking" asp-action="Create" class="btn-main">
+            Оставить заявку
+        </a>
+    </div>
+</section>
