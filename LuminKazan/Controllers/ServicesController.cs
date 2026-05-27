@@ -1,0 +1,41 @@
+﻿using LuminKazan.Data;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+
+namespace LuminKazan.Controllers
+{
+    [AllowAnonymous]
+    public class ServicesController : Controller
+    {
+        private readonly ApplicationDbContext _context;
+
+        public ServicesController(ApplicationDbContext context)
+        {
+            _context = context;
+        }
+
+        public async Task<IActionResult> Index()
+        {
+            var services = await _context.Services
+                .Where(s => s.IsActive)
+                .OrderBy(s => s.Price)
+                .ToListAsync();
+
+            return View(services);
+        }
+
+        public async Task<IActionResult> Details(int id)
+        {
+            var service = await _context.Services
+                .FirstOrDefaultAsync(s => s.Id == id && s.IsActive);
+
+            if (service == null)
+            {
+                return NotFound();
+            }
+
+            return View(service);
+        }
+    }
+}
