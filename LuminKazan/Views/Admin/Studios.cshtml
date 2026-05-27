@@ -1,0 +1,159 @@
+﻿@model IEnumerable<LuminKazan.Models.Studio>
+
+@{
+    Layout = "_AdminLayout";
+    ViewData["Title"] = "Студии";
+}
+
+<section class="admin-page">
+    <div class="admin-page__header">
+        <div>
+            <span class="admin-page__label">Админка</span>
+
+            <h1 class="admin-page__title">Студии</h1>
+
+            <p class="admin-page__description">
+                Управление студиями, которые отображаются на сайте и используются в форме записи.
+            </p>
+        </div>
+
+        <div class="admin-page__actions">
+            <a asp-controller="Admin"
+               asp-action="CreateStudio"
+               class="admin-button admin-button--primary">
+                Добавить студию
+            </a>
+
+            <a asp-controller="Admin"
+               asp-action="Index"
+               class="admin-button admin-button--secondary">
+                Назад в панель
+            </a>
+        </div>
+    </div>
+
+    @if (Model == null || !Model.Any())
+    {
+        <div class="admin-empty">
+            <h2>Студии не добавлены</h2>
+
+            <p>
+                После добавления студии она появится в этом разделе и станет доступна в форме записи.
+            </p>
+
+            <a asp-controller="Admin"
+               asp-action="CreateStudio"
+               class="admin-button admin-button--primary">
+                Добавить студию
+            </a>
+        </div>
+    }
+    else
+    {
+        <div class="admin-studios-list">
+            @foreach (var studio in Model)
+            {
+                <article class="admin-studio-card">
+                    <div class="admin-studio-card__image">
+                        @if (!string.IsNullOrWhiteSpace(studio.ImagePath))
+                        {
+                            <img src="@studio.ImagePath" alt="@studio.Name" />
+                        }
+                        else
+                        {
+                            <div class="admin-placeholder">
+                                Изображение не загружено
+                            </div>
+                        }
+                    </div>
+
+                    <div class="admin-studio-card__content">
+                        <div class="entity-card__head">
+                            <div>
+                                <p class="admin-card-kicker">
+                                    @(string.IsNullOrWhiteSpace(studio.District) ? "Район не указан" : studio.District)
+                                </p>
+
+                                <h2 class="admin-studio-card__title">
+                                    @studio.Name
+                                </h2>
+                            </div>
+
+                            <div class="admin-studio-card__price">
+                                @studio.PricePerHour.ToString("N0") ₽/час
+                            </div>
+                        </div>
+
+                        <p class="admin-studio-card__description">
+                            @(string.IsNullOrWhiteSpace(studio.Description) ? "Описание студии не заполнено." : studio.Description)
+                        </p>
+
+                        <div class="admin-meta-grid">
+                            <div class="admin-meta-item">
+                                <span class="admin-meta-item__label">Адрес</span>
+                                <span class="admin-meta-item__value">
+                                    @(string.IsNullOrWhiteSpace(studio.Address) ? "Не указан" : studio.Address)
+                                </span>
+                            </div>
+
+                            <div class="admin-meta-item">
+                                <span class="admin-meta-item__label">Стиль</span>
+                                <span class="admin-meta-item__value">
+                                    @(string.IsNullOrWhiteSpace(studio.InteriorStyle) ? "Не указан" : studio.InteriorStyle)
+                                </span>
+                            </div>
+
+                            <div class="admin-meta-item">
+                                <span class="admin-meta-item__label">Залы</span>
+                                <span class="admin-meta-item__value">
+                                    @studio.HallCount
+                                </span>
+                            </div>
+
+                            <div class="admin-meta-item">
+                                <span class="admin-meta-item__label">Свет</span>
+                                <span class="admin-meta-item__value">
+                                    @(studio.HasNaturalLight ? "Естественный" : "Искусственный")
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="admin-card-actions">
+                        <span class="status-badge @(studio.IsActive ? "success" : "danger")">
+                            @(studio.IsActive ? "Активна" : "Скрыта")
+                        </span>
+
+                        <a asp-controller="Admin"
+                           asp-action="EditStudio"
+                           asp-route-id="@studio.Id"
+                           class="admin-button admin-button--secondary">
+                            Изменить
+                        </a>
+
+                        <form asp-controller="Admin"
+                              asp-action="ToggleStudioStatus"
+                              asp-route-id="@studio.Id"
+                              method="post"
+                              class="admin-inline-form">
+                            @Html.AntiForgeryToken()
+
+                            @if (studio.IsActive)
+                            {
+                                <button type="submit" class="admin-button admin-button--danger">
+                                    Скрыть
+                                </button>
+                            }
+                            else
+                            {
+                                <button type="submit" class="admin-button admin-button--success">
+                                    Активировать
+                                </button>
+                            }
+                        </form>
+                    </div>
+                </article>
+            }
+        </div>
+    }
+</section>

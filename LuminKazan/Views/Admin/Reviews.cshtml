@@ -1,0 +1,390 @@
+﻿@model IEnumerable<LuminKazan.Models.Review>
+
+@{
+    Layout = "_AdminLayout";
+    ViewData["Title"] = "Отзывы";
+
+    var reviews = Model?.ToList() ?? new List<LuminKazan.Models.Review>();
+    var totalReviews = reviews.Count;
+    var publishedReviews = reviews.Count(review => review.IsPublished);
+    var hiddenReviews = reviews.Count(review => !review.IsPublished);
+}
+
+<style>
+    .reviews-admin-page {
+        width: min(100%, 1240px);
+        margin: 0 auto;
+        padding: 44px 24px 72px;
+    }
+
+    .reviews-admin-header {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 24px;
+        margin-bottom: 28px;
+    }
+
+    .reviews-admin-eyebrow {
+        display: block;
+        margin-bottom: 10px;
+        color: #a46b47;
+        font-size: 12px;
+        line-height: 1.2;
+        font-weight: 800;
+        letter-spacing: 0.22em;
+        text-transform: uppercase;
+    }
+
+    .reviews-admin-title {
+        margin: 0 0 12px;
+        color: #1f1c19;
+        font-size: 46px;
+        line-height: 1.02;
+        font-weight: 850;
+        letter-spacing: -0.035em;
+    }
+
+    .reviews-admin-description {
+        max-width: 760px;
+        margin: 0;
+        color: #6b6057;
+        font-size: 18px;
+        line-height: 1.45;
+        font-weight: 400;
+    }
+
+    .reviews-admin-button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 44px;
+        padding: 0 20px;
+        border-radius: 999px;
+        border: 1px solid #dfcfc1;
+        background: #fffaf5;
+        color: #1f1c19 !important;
+        font-size: 15px;
+        line-height: 1;
+        font-weight: 800;
+        text-decoration: none !important;
+        white-space: nowrap;
+        cursor: pointer;
+    }
+
+        .reviews-admin-button:hover {
+            background: #f7eee6;
+            color: #1f1c19 !important;
+            text-decoration: none !important;
+        }
+
+        .reviews-admin-button.success {
+            border-color: #cde9d4;
+            background: #e7f6eb;
+            color: #19713d !important;
+        }
+
+        .reviews-admin-button.danger {
+            border-color: #f1c9c9;
+            background: #fff1f1;
+            color: #cf4e4e !important;
+        }
+
+    .reviews-admin-stats {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 16px;
+        margin-bottom: 24px;
+    }
+
+    .reviews-admin-stat {
+        min-height: 112px;
+        padding: 24px;
+        background: #ffffff;
+        border: 1px solid #eaded4;
+        border-radius: 22px;
+        box-shadow: 0 18px 48px rgba(31, 28, 25, 0.05);
+    }
+
+    .reviews-admin-stat__value {
+        margin: 0 0 6px;
+        color: #1f1c19;
+        font-size: 40px;
+        line-height: 1;
+        font-weight: 850;
+        letter-spacing: -0.03em;
+    }
+
+    .reviews-admin-stat__label {
+        margin: 0;
+        color: #6b6057;
+        font-size: 16px;
+        line-height: 1.35;
+        font-weight: 500;
+    }
+
+    .reviews-admin-list {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 16px;
+    }
+
+    .review-admin-card {
+        padding: 26px;
+        background: #ffffff;
+        border: 1px solid #eaded4;
+        border-radius: 22px;
+        box-shadow: 0 18px 48px rgba(31, 28, 25, 0.05);
+    }
+
+    .review-admin-card__top {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 18px;
+        margin-bottom: 16px;
+    }
+
+    .review-admin-card__name {
+        margin: 0 0 6px;
+        color: #1f1c19;
+        font-size: 24px;
+        line-height: 1.15;
+        font-weight: 850;
+        letter-spacing: -0.025em;
+    }
+
+    .review-admin-card__meta {
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 10px;
+        color: #6b6057;
+        font-size: 14px;
+        line-height: 1.35;
+        font-weight: 600;
+    }
+
+    .review-admin-card__text {
+        max-width: 920px;
+        margin: 0 0 20px;
+        color: #4d443d;
+        font-size: 16px;
+        line-height: 1.55;
+        font-weight: 400;
+    }
+
+    .review-admin-status {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 34px;
+        padding: 0 14px;
+        border-radius: 999px;
+        font-size: 14px;
+        line-height: 1;
+        font-weight: 800;
+        white-space: nowrap;
+    }
+
+        .review-admin-status.published {
+            background: #e7f6eb;
+            color: #19713d;
+        }
+
+        .review-admin-status.hidden {
+            background: #fff1f1;
+            color: #cf4e4e;
+        }
+
+    .review-admin-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+
+    .review-admin-form {
+        margin: 0;
+    }
+
+    .reviews-admin-empty {
+        padding: 36px;
+        background: #ffffff;
+        border: 1px solid #eaded4;
+        border-radius: 22px;
+        box-shadow: 0 18px 48px rgba(31, 28, 25, 0.05);
+    }
+
+        .reviews-admin-empty h2 {
+            margin: 0 0 10px;
+            color: #1f1c19;
+            font-size: 28px;
+            line-height: 1.15;
+            font-weight: 850;
+            letter-spacing: -0.025em;
+        }
+
+        .reviews-admin-empty p {
+            max-width: 660px;
+            margin: 0;
+            color: #6b6057;
+            font-size: 16px;
+            line-height: 1.5;
+            font-weight: 400;
+        }
+
+    @@media (max-width: 900px) {
+        .reviews-admin-header {
+            flex-direction: column;
+        }
+
+        .reviews-admin-title {
+            font-size: 34px;
+        }
+
+        .reviews-admin-description {
+            font-size: 16px;
+        }
+
+        .reviews-admin-stats {
+            grid-template-columns: 1fr;
+        }
+
+        .review-admin-card__top {
+            flex-direction: column;
+        }
+
+        .reviews-admin-button {
+            width: 100%;
+        }
+
+        .review-admin-form {
+            width: 100%;
+        }
+    }
+</style>
+
+<div class="reviews-admin-page">
+    <section class="reviews-admin-header">
+        <div>
+            <span class="reviews-admin-eyebrow">Отзывы</span>
+
+            <h1 class="reviews-admin-title">Отзывы клиентов</h1>
+
+            <p class="reviews-admin-description">
+                Модерация отзывов, которые отображаются на главной странице сайта.
+            </p>
+        </div>
+
+        <a asp-controller="Admin"
+           asp-action="Index"
+           class="reviews-admin-button">
+            Назад в панель
+        </a>
+    </section>
+
+    <section class="reviews-admin-stats">
+        <div class="reviews-admin-stat">
+            <div class="reviews-admin-stat__value">@totalReviews</div>
+            <p class="reviews-admin-stat__label">Всего отзывов</p>
+        </div>
+
+        <div class="reviews-admin-stat">
+            <div class="reviews-admin-stat__value">@publishedReviews</div>
+            <p class="reviews-admin-stat__label">На главной</p>
+        </div>
+
+        <div class="reviews-admin-stat">
+            <div class="reviews-admin-stat__value">@hiddenReviews</div>
+            <p class="reviews-admin-stat__label">Скрыто</p>
+        </div>
+    </section>
+
+    @if (!reviews.Any())
+    {
+        <section class="reviews-admin-empty">
+            <h2>Отзывов пока нет</h2>
+
+            <p>
+                Новые отзывы появятся в этом разделе после отправки формы на сайте.
+            </p>
+        </section>
+    }
+    else
+    {
+        <section class="reviews-admin-list">
+            @foreach (var review in reviews)
+            {
+                <article class="review-admin-card">
+                    <div class="review-admin-card__top">
+                        <div>
+                            <h2 class="review-admin-card__name">@review.ClientName</h2>
+
+                            <div class="review-admin-card__meta">
+                                <span>Оценка: @review.Rating / 5</span>
+                                <span>@review.CreatedAt.ToString("dd.MM.yyyy HH:mm")</span>
+                            </div>
+                        </div>
+
+                        @if (review.IsPublished)
+                        {
+                            <span class="review-admin-status published">На главной</span>
+                        }
+                        else
+                        {
+                            <span class="review-admin-status hidden">Скрыт</span>
+                        }
+                    </div>
+
+                    <p class="review-admin-card__text">
+                        @review.Text
+                    </p>
+
+                    <div class="review-admin-actions">
+                        @if (!review.IsPublished)
+                        {
+                            <form asp-controller="Admin"
+                                  asp-action="PublishReview"
+                                  asp-route-id="@review.Id"
+                                  method="post"
+                                  class="review-admin-form">
+                                @Html.AntiForgeryToken()
+
+                                <button type="submit" class="reviews-admin-button success">
+                                    Показать на главной
+                                </button>
+                            </form>
+                        }
+                        else
+                        {
+                            <form asp-controller="Admin"
+                                  asp-action="HideReview"
+                                  asp-route-id="@review.Id"
+                                  method="post"
+                                  class="review-admin-form">
+                                @Html.AntiForgeryToken()
+
+                                <button type="submit" class="reviews-admin-button">
+                                    Скрыть с главной
+                                </button>
+                            </form>
+                        }
+
+                        <form asp-controller="Admin"
+                              asp-action="DeleteReview"
+                              asp-route-id="@review.Id"
+                              method="post"
+                              class="review-admin-form"
+                              onsubmit="return confirm('Удалить отзыв?');">
+                            @Html.AntiForgeryToken()
+
+                            <button type="submit" class="reviews-admin-button danger">
+                                Удалить
+                            </button>
+                        </form>
+                    </div>
+                </article>
+            }
+        </section>
+    }
+</div>

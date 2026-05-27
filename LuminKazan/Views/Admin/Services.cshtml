@@ -1,0 +1,113 @@
+﻿@model IEnumerable<LuminKazan.Models.Service>
+
+@{
+    Layout = "_AdminLayout";
+    ViewData["Title"] = "Услуги";
+}
+
+<section class="admin-page">
+    <div class="admin-page__header">
+        <div>
+            <span class="admin-page__label">Админка</span>
+
+            <h1 class="admin-page__title">Услуги</h1>
+
+            <p class="admin-page__description">
+                Управление форматами съемки, которые отображаются на сайте и используются в форме записи.
+            </p>
+        </div>
+
+        <div class="admin-page__actions">
+            <a asp-action="CreateService" class="admin-button admin-button--primary">
+                Добавить услугу
+            </a>
+
+            <a asp-action="Index" class="admin-button admin-button--secondary">
+                Назад в панель
+            </a>
+        </div>
+    </div>
+
+    @if (Model == null || !Model.Any())
+    {
+        <div class="admin-card">
+            <h2>Услуги не добавлены</h2>
+            <p>
+                Добавьте первый формат съемки, чтобы он появился на сайте и в форме записи.
+            </p>
+
+            <a asp-action="CreateService" class="admin-button admin-button--primary">
+                Добавить услугу
+            </a>
+        </div>
+    }
+    else
+    {
+        <div class="admin-services-grid">
+            @foreach (var service in Model)
+            {
+                <article class="admin-service-card">
+                    <div class="admin-service-card__top">
+                        <div>
+                            <div class="admin-service-card__meta">
+                                @service.DurationMinutes мин
+                            </div>
+
+                            <h2 class="admin-service-card__title">
+                                @service.Title
+                            </h2>
+                        </div>
+
+                        <div class="admin-service-card__price">
+                            @service.Price.ToString("N0") ₽
+                        </div>
+                    </div>
+
+                    <p class="admin-service-card__description">
+                        @service.Description
+                    </p>
+
+                    <div class="admin-meta-grid">
+                        <div class="admin-meta-item">
+                            <span class="admin-meta-item__label">Ретушь</span>
+                            <span class="admin-meta-item__value">@service.RetouchedPhotosCount фото</span>
+                        </div>
+
+                        <div class="admin-meta-item">
+                            <span class="admin-meta-item__label">Все фото</span>
+                            <span class="admin-meta-item__value">@service.AllPhotosCount фото</span>
+                        </div>
+
+                        <div class="admin-meta-item">
+                            <span class="admin-meta-item__label">Готовность</span>
+                            <span class="admin-meta-item__value">@service.DeliveryDays дн.</span>
+                        </div>
+
+                        <div class="admin-meta-item">
+                            <span class="admin-meta-item__label">Студия</span>
+                            <span class="admin-meta-item__value">
+                                @(service.IncludesStudio ? "Включена" : "Не включена")
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="admin-card-actions">
+                        <span class="admin-status @(service.IsActive ? "admin-status--done" : "admin-status--cancel")">
+                            @(service.IsActive ? "Активна" : "Скрыта")
+                        </span>
+
+                        <a asp-action="EditService"
+                           asp-route-id="@service.Id"
+                           class="admin-button admin-button--secondary">
+                            Изменить
+                        </a><a asp-action="DeleteService"
+                               asp-route-id="@service.Id"
+                               class="admin-button admin-button--danger">
+                            Удалить
+                        </a>
+                    </div>
+                </article>
+            }
+        </div>
+    }
+</section>

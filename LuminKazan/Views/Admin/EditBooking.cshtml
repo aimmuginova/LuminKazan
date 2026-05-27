@@ -1,0 +1,392 @@
+﻿@model LuminKazan.ViewModels.BookingEditViewModel
+
+@{
+    ViewData["Title"] = "Редактирование заявки";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<style>
+    .booking-edit-page,
+    .booking-edit-page *,
+    .booking-edit-page *::before,
+    .booking-edit-page *::after {
+        box-sizing: border-box;
+    }
+
+    .booking-edit-page {
+        width: min(1200px, calc(100% - 48px));
+        margin: 0 auto;
+        padding: 48px 0 72px;
+    }
+
+    .booking-edit-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: 24px;
+        margin-bottom: 28px;
+    }
+
+    .booking-edit-header-content {
+        max-width: 760px;
+    }
+
+    .booking-edit-kicker {
+        display: block;
+        margin-bottom: 16px;
+        color: #a46f4f;
+        font-size: 13px;
+        font-weight: 700;
+        letter-spacing: 0.26em;
+        text-transform: uppercase;
+    }
+
+    .booking-edit-title {
+        margin: 0;
+        color: #1f1d1b;
+        font-size: clamp(42px, 5vw, 68px);
+        line-height: 0.96;
+        font-weight: 800;
+        letter-spacing: -0.05em;
+    }
+
+    .booking-edit-description {
+        margin: 20px 0 0;
+        color: #6f625c;
+        font-size: 19px;
+        line-height: 1.55;
+    }
+
+    .booking-edit-header-actions {
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        padding-top: 14px;
+        flex-shrink: 0;
+    }
+
+    .booking-edit-form {
+        display: flex;
+        flex-direction: column;
+        gap: 24px;
+    }
+
+    .booking-edit-card {
+        background: #ffffff;
+        border: 1px solid #eadfd7;
+        border-radius: 30px;
+        box-shadow: 0 16px 40px rgba(49, 38, 30, 0.06);
+        padding: 36px 42px;
+    }
+
+    .booking-edit-card-kicker {
+        display: block;
+        margin-bottom: 12px;
+        color: #a46f4f;
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 0.24em;
+        text-transform: uppercase;
+    }
+
+    .booking-edit-card-title {
+        margin: 0 0 28px;
+        color: #1f1d1b;
+        font-size: 30px;
+        line-height: 1.08;
+        font-weight: 800;
+        letter-spacing: -0.03em;
+    }
+
+    .booking-edit-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 28px 24px;
+    }
+
+    .booking-edit-field {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        min-width: 0;
+    }
+
+    .booking-edit-field-full {
+        grid-column: 1 / -1;
+    }
+
+    .booking-edit-field label {
+        color: #1f1d1b;
+        font-size: 15px;
+        line-height: 1.3;
+        font-weight: 800;
+    }
+
+    .booking-edit-field input,
+    .booking-edit-field select,
+    .booking-edit-field textarea {
+        width: 100%;
+        min-height: 58px;
+        padding: 16px 18px;
+        border: 1px solid #dccdc1;
+        border-radius: 20px;
+        background: #fffdfa;
+        color: #1f1d1b;
+        font-size: 18px;
+        line-height: 1.35;
+        outline: none;
+        transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+    }
+
+    .booking-edit-field textarea {
+        min-height: 150px;
+        resize: vertical;
+    }
+
+        .booking-edit-field input:focus,
+        .booking-edit-field select:focus,
+        .booking-edit-field textarea:focus {
+            background: #ffffff;
+            border-color: #1f1d1b;
+            box-shadow: 0 0 0 4px rgba(31, 29, 27, 0.08);
+        }
+
+    .booking-edit-validation-summary {
+        padding: 18px 22px;
+        border: 1px solid #efb7b7;
+        border-radius: 18px;
+        background: #fff3f3;
+        color: #a43434;
+        font-size: 15px;
+        font-weight: 700;
+    }
+
+        .booking-edit-validation-summary:empty {
+            display: none;
+        }
+
+    .booking-edit-validation {
+        color: #c64040;
+        font-size: 14px;
+        font-weight: 700;
+        line-height: 1.4;
+    }
+
+    .booking-edit-bottom-actions {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        margin-top: 4px;
+    }
+
+    .booking-edit-button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 54px;
+        padding: 0 28px;
+        border-radius: 999px;
+        border: 1px solid #d9c8bc;
+        text-decoration: none;
+        font-size: 16px;
+        font-weight: 800;
+        cursor: pointer;
+        transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease, color 0.2s ease;
+    }
+
+        .booking-edit-button:hover {
+            transform: translateY(-1px);
+            text-decoration: none;
+        }
+
+    .booking-edit-button-primary {
+        background: #1f1d1b;
+        border-color: #1f1d1b;
+        color: #ffffff;
+        box-shadow: 0 12px 26px rgba(31, 29, 27, 0.14);
+    }
+
+        .booking-edit-button-primary:hover {
+            background: #11100f;
+            color: #ffffff;
+        }
+
+    .booking-edit-button-secondary {
+        background: #ffffff;
+        color: #1f1d1b;
+    }
+
+        .booking-edit-button-secondary:hover {
+            background: #f8f1eb;
+            color: #1f1d1b;
+        }
+
+    @@media (max-width: 980px) {
+        .booking-edit-page {
+            width: min(100% - 28px, 1200px);
+            padding: 32px 0 56px;
+        }
+
+        .booking-edit-header {
+            flex-direction: column;
+            align-items: stretch;
+            gap: 20px;
+        }
+
+        .booking-edit-header-actions {
+            justify-content: flex-start;
+            padding-top: 0;
+        }
+
+        .booking-edit-card {
+            padding: 26px 22px;
+            border-radius: 24px;
+        }
+
+        .booking-edit-grid {
+            grid-template-columns: 1fr;
+            gap: 22px;
+        }
+
+        .booking-edit-field-full {
+            grid-column: auto;
+        }
+
+        .booking-edit-title {
+            font-size: 44px;
+        }
+
+        .booking-edit-description {
+            font-size: 18px;
+        }
+
+        .booking-edit-bottom-actions {
+            flex-direction: column;
+            align-items: stretch;
+        }
+
+        .booking-edit-button {
+            width: 100%;
+        }
+    }
+</style>
+
+<section class="booking-edit-page">
+    <div class="booking-edit-header">
+        <div class="booking-edit-header-content">
+            <span class="booking-edit-kicker">Заявка</span>
+
+            <h1 class="booking-edit-title">Редактирование заявки</h1>
+
+            <p class="booking-edit-description">
+                Изменение данных клиента, даты и времени съемки, услуги, студии, статуса и комментария.
+            </p>
+        </div>
+
+        <div class="booking-edit-header-actions">
+            <a asp-controller="Admin"
+               asp-action="Bookings"
+               class="booking-edit-button booking-edit-button-secondary">
+                Назад к заявкам
+            </a>
+        </div>
+    </div>
+
+    <form asp-controller="Admin"
+          asp-action="EditBooking"
+          asp-route-id="@Model.Id"
+          method="post"
+          class="booking-edit-form">
+
+        @Html.AntiForgeryToken()
+
+        <input asp-for="Id" type="hidden" />
+        <input asp-for="CreatedAt" type="hidden" />
+
+        <div asp-validation-summary="ModelOnly" class="booking-edit-validation-summary"></div>
+
+        <div class="booking-edit-card">
+            <span class="booking-edit-card-kicker">Клиент</span>
+            <h2 class="booking-edit-card-title">Контактные данные</h2>
+
+            <div class="booking-edit-grid">
+                <div class="booking-edit-field">
+                    <label asp-for="ClientName">Имя</label>
+                    <input asp-for="ClientName" />
+                    <span asp-validation-for="ClientName" class="booking-edit-validation"></span>
+                </div>
+
+                <div class="booking-edit-field">
+                    <label asp-for="Phone">Телефон</label>
+                    <input asp-for="Phone" />
+                    <span asp-validation-for="Phone" class="booking-edit-validation"></span>
+                </div>
+
+                <div class="booking-edit-field">
+                    <label asp-for="Email">Email</label>
+                    <input asp-for="Email" />
+                    <span asp-validation-for="Email" class="booking-edit-validation"></span>
+                </div>
+
+                <div class="booking-edit-field">
+                    <label asp-for="BookingDate">Дата съемки</label>
+                    <input asp-for="BookingDate" type="date" asp-format="{0:yyyy-MM-dd}" />
+                    <span asp-validation-for="BookingDate" class="booking-edit-validation"></span>
+                </div>
+
+                <div class="booking-edit-field">
+                    <label asp-for="BookingTime">Время начала</label>
+                    <select asp-for="BookingTime" asp-items="Model.TimeSlots"></select>
+                    <span asp-validation-for="BookingTime" class="booking-edit-validation"></span>
+                </div>
+            </div>
+        </div>
+
+        <div class="booking-edit-card">
+            <span class="booking-edit-card-kicker">Съемка</span>
+            <h2 class="booking-edit-card-title">Параметры заявки</h2>
+
+            <div class="booking-edit-grid">
+                <div class="booking-edit-field">
+                    <label asp-for="ServiceId">Услуга</label>
+                    <select asp-for="ServiceId" asp-items="Model.Services"></select>
+                    <span asp-validation-for="ServiceId" class="booking-edit-validation"></span>
+                </div>
+
+                <div class="booking-edit-field">
+                    <label asp-for="StudioId">Студия</label>
+                    <select asp-for="StudioId" asp-items="Model.Studios"></select>
+                    <span asp-validation-for="StudioId" class="booking-edit-validation"></span>
+                </div>
+
+                <div class="booking-edit-field booking-edit-field-full">
+                    <label asp-for="Status">Статус заявки</label>
+                    <select asp-for="Status" asp-items="Model.Statuses"></select>
+                    <span asp-validation-for="Status" class="booking-edit-validation"></span>
+                </div>
+
+                <div class="booking-edit-field booking-edit-field-full">
+                    <label asp-for="Comment">Комментарий</label>
+                    <textarea asp-for="Comment"></textarea>
+                    <span asp-validation-for="Comment" class="booking-edit-validation"></span>
+                </div>
+            </div>
+        </div>
+
+        <div class="booking-edit-bottom-actions">
+            <button type="submit" class="booking-edit-button booking-edit-button-primary">
+                Сохранить изменения
+            </button>
+
+            <a asp-controller="Admin"
+               asp-action="Bookings"
+               class="booking-edit-button booking-edit-button-secondary">
+                Отмена
+            </a>
+        </div>
+    </form>
+</section>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

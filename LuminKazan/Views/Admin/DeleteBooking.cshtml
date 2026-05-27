@@ -1,0 +1,31 @@
+﻿@model LuminKazan.Models.Booking
+
+@{
+    ViewData["Title"] = "Удаление заявки";
+}
+
+<section class="admin-page">
+    <div class="admin-header">
+        <span class="section-label">Заявки</span>
+        <h1>Удаление заявки</h1>
+        <p>Проверьте данные и подтвердите удаление заявки.</p>
+    </div>
+
+    <div class="booking-form-wrapper">
+        <p><strong>Имя:</strong> @Model.ClientName</p>
+        <p><strong>Телефон:</strong> @Model.Phone</p>
+        <p><strong>Email:</strong> @Model.Email</p>
+        <p><strong>Дата съемки:</strong> @Model.BookingDate.ToString("dd.MM.yyyy")</p>
+        <p><strong>Статус:</strong> @Model.Status</p>
+        <p><strong>Комментарий:</strong> @Model.Comment</p>
+
+        <form asp-controller="Admin" asp-action="DeleteBooking" method="post">
+            <input type="hidden" asp-for="Id" />
+
+            <div class="admin-links">
+                <button type="submit" class="btn btn-danger">Удалить заявку</button>
+                <a asp-controller="Admin" asp-action="Bookings" class="btn btn-outline-secondary">Отмена</a>
+            </div>
+        </form>
+    </div>
+</section>

@@ -1,0 +1,126 @@
+﻿@model LuminKazan.Models.Service
+
+@{
+    Layout = "_AdminLayout";
+    ViewData["Title"] = "Редактирование услуги";
+}
+
+<section class="admin-page">
+    <div class="admin-page__header">
+        <div>
+            <span class="admin-page__label">Услуги</span>
+
+            <h1 class="admin-page__title">Редактирование услуги</h1>
+
+            <p class="admin-page__description">
+                Изменение названия, описания, стоимости, длительности, количества фотографий и отображения услуги на сайте.
+            </p>
+        </div>
+
+        <div class="admin-page__actions">
+            <a asp-action="Services" class="admin-button admin-button--secondary">
+                Назад к услугам
+            </a>
+        </div>
+    </div>
+
+    <form asp-action="EditService" method="post" class="admin-form">
+        @Html.AntiForgeryToken()
+
+        <input asp-for="Id" type="hidden" />
+
+        <div asp-validation-summary="ModelOnly" class="validation-summary-errors"></div>
+
+        <section class="admin-form__section">
+            <span class="admin-form__section-label">Описание</span>
+
+            <h2 class="admin-form__section-title">Основная информация</h2>
+
+            <div class="admin-form__grid">
+                <div class="admin-form__field admin-form__field--wide">
+                    <label asp-for="Title">Название услуги</label>
+                    <input asp-for="Title" />
+                    <span asp-validation-for="Title" class="admin-validation"></span>
+                </div>
+
+                <div class="admin-form__field admin-form__field--wide">
+                    <label asp-for="Description">Описание</label>
+                    <textarea asp-for="Description"></textarea>
+                    <span asp-validation-for="Description" class="admin-validation"></span>
+                </div>
+            </div>
+        </section>
+
+        <section class="admin-form__section">
+            <span class="admin-form__section-label">Параметры</span>
+
+            <h2 class="admin-form__section-title">Стоимость и состав</h2>
+
+            <div class="admin-form__grid">
+                <div class="admin-form__field">
+                    <label asp-for="DurationMinutes">Длительность, минут</label>
+                    <input asp-for="DurationMinutes" type="number" min="0" step="1" />
+                    <span asp-validation-for="DurationMinutes" class="admin-validation"></span>
+                </div>
+
+                <div class="admin-form__field">
+                    <label asp-for="Price">Цена, ₽</label>
+                    <input asp-for="Price" type="number" min="0" step="0.01" />
+                    <span asp-validation-for="Price" class="admin-validation"></span>
+                </div>
+
+                <div class="admin-form__field">
+                    <label asp-for="RetouchedPhotosCount">Количество фото в ретуши</label>
+                    <input asp-for="RetouchedPhotosCount" type="number" min="0" step="1" />
+                    <span asp-validation-for="RetouchedPhotosCount" class="admin-validation"></span>
+                </div>
+
+                <div class="admin-form__field">
+                    <label asp-for="AllPhotosCount">Количество всех фото</label>
+                    <input asp-for="AllPhotosCount" type="number" min="0" step="1" />
+                    <span asp-validation-for="AllPhotosCount" class="admin-validation"></span>
+                </div>
+
+                <div class="admin-form__field">
+                    <label asp-for="DeliveryDays">Срок готовности, дней</label>
+                    <input asp-for="DeliveryDays" type="number" min="0" step="1" />
+                    <span asp-validation-for="DeliveryDays" class="admin-validation"></span>
+                </div>
+            </div>
+        </section>
+
+        <section class="admin-form__section">
+            <span class="admin-form__section-label">Отображение</span>
+
+            <h2 class="admin-form__section-title">Статус услуги</h2><div class="admin-form__grid">
+                <div class="admin-form__field admin-form__field--wide">
+                    <label class="admin-checkbox">
+                        <input asp-for="IncludesStudio" />
+                        <span>Студия включена в стоимость</span>
+                    </label>
+                </div>
+
+                <div class="admin-form__field admin-form__field--wide">
+                    <label class="admin-checkbox">
+                        <input asp-for="IsActive" />
+                        <span>Отображать услугу на сайте</span>
+                    </label>
+                </div>
+            </div>
+        </section>
+
+        <div class="admin-form__actions">
+            <button type="submit" class="admin-button admin-button--primary">
+                Сохранить изменения
+            </button>
+
+            <a asp-action="Services" class="admin-button admin-button--secondary">
+                Отмена
+            </a>
+        </div>
+    </form>
+</section>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

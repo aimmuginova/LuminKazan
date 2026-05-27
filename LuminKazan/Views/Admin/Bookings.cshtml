@@ -1,0 +1,374 @@
+﻿@model IEnumerable<LuminKazan.Models.Booking>
+
+@{
+    Layout = "_AdminLayout";
+    ViewData["Title"] = "Заявки";
+
+    var currentStatus = ViewBag.CurrentStatus?.ToString() ?? "Все";
+    var statuses = new[] { "Все", "Новая", "В работе", "Подтверждена", "Завершена", "Отменена" };
+}
+
+<style>
+    .bookings-page {
+        max-width: 1360px;
+        margin: 0 auto;
+        padding: 48px 28px 80px;
+    }
+
+    .bookings-header {
+        display: flex;
+        align-items: flex-end;
+        justify-content: space-between;
+        gap: 28px;
+        margin-bottom: 30px;
+    }
+
+    .bookings-eyebrow {
+        display: block;
+        margin-bottom: 12px;
+        color: #a46b47;
+        font-size: 12px;
+        line-height: 1.2;
+        font-weight: 800;
+        letter-spacing: 0.22em;
+        text-transform: uppercase;
+    }
+
+    .bookings-title {
+        margin: 0 0 14px;
+        color: #1f1c19;
+        font-size: 56px;
+        line-height: 0.98;
+        font-weight: 900;
+        letter-spacing: -0.04em;
+    }
+
+    .bookings-description {
+        max-width: 720px;
+        margin: 0;
+        color: #6d6259;
+        font-size: 19px;
+        line-height: 1.45;
+        font-weight: 400;
+    }
+
+    .bookings-filters {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-bottom: 22px;
+    }
+
+    .bookings-filter {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 48px;
+        padding: 0 22px;
+        border: 1px solid #dfcfc1;
+        border-radius: 999px;
+        background: #fffaf5;
+        color: #1f1c19;
+        font-size: 15px;
+        line-height: 1;
+        font-weight: 800;
+        text-decoration: none;
+        transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+    }
+
+        .bookings-filter:hover {
+            background: #f7eee6;
+            color: #1f1c19;
+            text-decoration: none;
+        }
+
+        .bookings-filter.is-active {
+            background: #1f1c19;
+            border-color: #1f1c19;
+            color: #ffffff;
+        }
+
+    .bookings-card {
+        overflow: hidden;
+        background: #ffffff;
+        border: 1px solid #eaded4;
+        border-radius: 24px;
+        box-shadow: 0 20px 60px rgba(31, 28, 25, 0.06);
+    }
+
+    .bookings-table-wrap {
+        width: 100%;
+        overflow-x: auto;
+    }
+
+    .bookings-table {
+        width: 100%;
+        min-width: 1120px;
+        border-collapse: collapse;
+    }
+
+        .bookings-table th {
+            padding: 22px 20px;
+            border-bottom: 1px solid #eaded4;
+            color: #a46b47;
+            font-size: 12px;
+            line-height: 1.25;
+            font-weight: 900;
+            letter-spacing: 0.16em;
+            text-align: left;
+            text-transform: uppercase;
+            white-space: nowrap;
+        }
+
+        .bookings-table td {
+            padding: 22px 20px;
+            border-bottom: 1px solid #eaded4;
+            color: #1f1c19;
+            font-size: 15px;
+            line-height: 1.45;
+            vertical-align: top;
+        }
+
+        .bookings-table tbody tr:last-child td {
+            border-bottom: 0;
+        }
+
+    .booking-client {
+        font-weight: 900;
+    }
+
+    .booking-muted {
+        margin-top: 4px;
+        color: #756a60;
+        font-size: 14px;
+        line-height: 1.35;
+    }
+
+    .booking-status {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 34px;
+        padding: 0 14px;
+        border-radius: 999px;
+        font-size: 13px;
+        line-height: 1;
+        font-weight: 900;
+        white-space: nowrap;
+    }
+
+        .booking-status.info {
+            background: #edf2ff;
+            color: #3159a8;
+        }
+
+        .booking-status.warning {
+            background: #fff2d8;
+            color: #9a6500;
+        }
+
+        .booking-status.success {
+            background: #e7f6eb;
+            color: #19713d;
+        }
+
+        .booking-status.danger {
+            background: #fdeaea;
+            color: #c84b4b;
+        }
+
+    .booking-actions {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        min-width: 130px;
+    }
+
+    .booking-button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 44px;
+        padding: 0 18px;
+        border-radius: 999px;
+        font-size: 14px;
+        line-height: 1;
+        font-weight: 900;
+        text-decoration: none;
+        white-space: nowrap;
+    }
+
+        .booking-button:hover {
+            text-decoration: none;
+        }
+
+        .booking-button.secondary {
+            background: #fffaf5;
+            border: 1px solid #dfcfc1;
+            color: #1f1c19;
+        }
+
+        .booking-button.danger {
+            background: #fff1f1;
+            border: 1px solid #f1c9c9;
+            color: #c84b4b;
+        }
+
+    .bookings-empty {
+        padding: 34px;
+        background: #ffffff;
+        border: 1px solid #eaded4;
+        border-radius: 24px;
+        color: #6d6259;
+        font-size: 17px;
+        line-height: 1.5;
+        box-shadow: 0 20px 60px rgba(31, 28, 25, 0.06);
+    }
+
+    @@media (max-width: 900px) {
+        .bookings-page {
+            padding: 38px 18px 70px;
+        }
+
+        .bookings-header {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .bookings-title {
+            font-size: 42px;
+        }
+
+        .bookings-description {
+            font-size: 17px;
+        }
+    }
+</style>
+
+<div class="bookings-page">
+    <section class="bookings-header">
+        <div>
+            <span class="bookings-eyebrow">Заявки</span>
+
+            <h1 class="bookings-title">Список заявок</h1>
+
+            <p class="bookings-description">
+                Заявки на съемку, контакты клиентов, выбранные услуги, студии, даты и текущие статусы.
+            </p>
+        </div>
+    </section>
+
+    <nav class="bookings-filters" aria-label="Фильтр заявок по статусу">
+        @foreach (var status in statuses)
+        {
+            <a asp-controller="Admin"
+               asp-action="Bookings"
+               asp-route-status="@(status == "Все" ? null : status)"
+               class="bookings-filter @(currentStatus == status ? "is-active" : "")">
+                @status
+            </a>
+        }
+    </nav>
+
+    @if (Model == null || !Model.Any())
+    {
+        <div class="bookings-empty">
+            Заявок пока нет.
+        </div>
+    }
+    else
+    {
+        <section class="bookings-card">
+            <div class="bookings-table-wrap">
+                <table class="bookings-table">
+                    <thead>
+                        <tr>
+                            <th>Клиент</th>
+                            <th>Контакты</th>
+                            <th>Дата съемки</th>
+                            <th>Услуга</th>
+                            <th>Студия</th>
+                            <th>Статус</th>
+                            <th>Комментарий</th>
+                            <th>Создано</th>
+                            <th>Действия</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        @foreach (var booking in Model)
+                        {
+                            var statusClass = booking.Status switch
+                            {
+                                "Новая" => "info",
+                                "В работе" => "warning",
+                                "Подтверждена" => "success",
+                                "Завершена" => "success",
+                                "Отменена" => "danger",
+                                _ => "info"
+                            };
+
+                            <tr>
+                                <td>
+                                    <div class="booking-client">@booking.ClientName</div>
+                                </td>
+
+                                <td>
+                                    <div>@booking.Phone</div>
+                                    <div class="booking-muted">@booking.Email</div>
+                                </td>
+
+                                <td>
+                                    @booking.BookingDate.ToString("dd.MM.yyyy")
+                                </td>
+
+                                <td>
+                                    @(booking.Service?.Title ?? "Не выбрана")
+                                </td>
+
+                                <td>
+                                    @(booking.Studio?.Name ?? "Не выбрана")
+                                </td>
+
+                                <td>
+                                    <span class="booking-status @statusClass">
+                                        @booking.Status
+                                    </span>
+                                </td>
+
+                                <td>
+                                    @(string.IsNullOrWhiteSpace(booking.Comment) ? "Без комментария" : booking.Comment)
+                                </td>
+
+                                <td>
+                                    @booking.CreatedAt.ToString("dd.MM.yyyy")
+                                    <div class="booking-muted">
+                                        @booking.CreatedAt.ToString("HH:mm")
+                                    </div>
+                                </td>
+
+                                <td>
+                                    <div class="booking-actions">
+                                        <a asp-controller="Admin"
+                                           asp-action="EditBooking"
+                                           asp-route-id="@booking.Id"
+                                           class="booking-button secondary">
+                                            Изменить
+                                        </a>
+
+                                        <a asp-controller="Admin"
+                                           asp-action="DeleteBooking"
+                                           asp-route-id="@booking.Id"
+                                           class="booking-button danger">
+                                            Удалить
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    }
+</div>

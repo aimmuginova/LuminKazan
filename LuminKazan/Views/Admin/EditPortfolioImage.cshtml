@@ -1,0 +1,137 @@
+﻿@model LuminKazan.ViewModels.PortfolioImageFormViewModel
+
+@{
+    Layout = "_AdminLayout";
+    ViewData["Title"] = "Редактирование фотографии";
+}
+
+<section class="admin-page">
+    <div class="admin-page__header">
+        <div>
+            <span class="admin-page__label">Фотография</span>
+
+            <h1 class="admin-page__title">Редактирование фотографии</h1>
+
+            <p class="admin-page__description">
+                Фотосерия: @Model.PortfolioItemTitle
+            </p>
+        </div>
+
+        <div class="admin-page__actions">
+            <a asp-controller="Admin"
+               asp-action="PortfolioImages"
+               asp-route-portfolioItemId="@Model.PortfolioItemId"
+               class="admin-button admin-button--secondary">
+                Назад к фотографиям
+            </a>
+        </div>
+    </div>
+
+    <form asp-controller="Admin"
+          asp-action="EditPortfolioImage"
+          asp-route-id="@Model.Id"
+          method="post"
+          enctype="multipart/form-data"
+          class="admin-form">
+
+        @Html.AntiForgeryToken()
+
+        <input asp-for="Id" type="hidden" />
+        <input asp-for="PortfolioItemId" type="hidden" />
+        <input asp-for="PortfolioItemTitle" type="hidden" />
+        <input asp-for="CurrentImagePath" type="hidden" />
+
+        <div asp-validation-summary="ModelOnly" class="admin-validation"></div>
+
+        @if (!string.IsNullOrWhiteSpace(Model.CurrentImagePath))
+        {
+            <section class="admin-form__section">
+                <span class="admin-form__section-label">Текущая фотография</span>
+
+                <h2 class="admin-form__section-title">Изображение</h2>
+
+                <div class="admin-current-image">
+                    <img src="@Model.CurrentImagePath" alt="Текущая фотография" />
+                </div>
+            </section>
+        }
+
+        <section class="admin-form__section">
+            <span class="admin-form__section-label">Изображение</span>
+
+            <h2 class="admin-form__section-title">Замена фотографии</h2>
+
+            <div class="admin-form__grid">
+                <div class="admin-form__field admin-form__field--wide">
+                    <label asp-for="ImageFile">Загрузить новую фотографию</label>
+
+                    <input asp-for="ImageFile"
+                           type="file"
+                           accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp" />
+
+                    <p class="admin-form__hint">
+                        Если новый файл не выбран, сохранится текущая фотография.
+                    </p>
+
+                    <span asp-validation-for="ImageFile" class="admin-validation"></span>
+                </div>
+
+                <div class="admin-form__field admin-form__field--wide">
+                    <label asp-for="ImagePath">Путь к фотографии</label>
+
+                    <input asp-for="ImagePath"
+                           placeholder="/images/portfolio/photo.jpg" />
+
+                    <p class="admin-form__hint">
+                        Можно оставить текущий путь или указать новый путь к файлу.
+                    </p>
+
+                    <span asp-validation-for="ImagePath" class="admin-validation"></span>
+                </div>
+            </div>
+        </section>
+
+        <section class="admin-form__section">
+            <span class="admin-form__section-label">Отображение</span>
+
+            <h2 class="admin-form__section-title">Параметры фотографии</h2>
+
+            <div class="admin-form__grid">
+                <div class="admin-form__field admin-form__field--wide">
+                    <label asp-for="Caption">Подпись</label>
+
+                    <input asp-for="Caption"
+                           placeholder="Подпись к фотографии" />
+
+                    <span asp-validation-for="Caption" class="admin-validation"></span>
+                </div>
+
+                <div class="admin-form__field">
+                    <label asp-for="SortOrder">Порядок отображения</label><input asp-for="SortOrder"
+                                                                                 type="number"
+                                                                                 min="1"
+                                                                                 step="1" />
+
+                    <span asp-validation-for="SortOrder" class="admin-validation"></span>
+                </div>
+            </div>
+        </section>
+
+        <div class="admin-form__actions">
+            <button type="submit" class="admin-button admin-button--primary">
+                Сохранить изменения
+            </button>
+
+            <a asp-controller="Admin"
+               asp-action="PortfolioImages"
+               asp-route-portfolioItemId="@Model.PortfolioItemId"
+               class="admin-button admin-button--secondary">
+                Отмена
+            </a>
+        </div>
+    </form>
+</section>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

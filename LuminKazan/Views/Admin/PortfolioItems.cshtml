@@ -1,0 +1,143 @@
+﻿@model IEnumerable<LuminKazan.Models.PortfolioItem>
+
+@{
+    Layout = "_AdminLayout";
+    ViewData["Title"] = "Портфолио";
+}
+
+<section class="admin-page">
+    <div class="admin-page__header">
+        <div>
+            <span class="admin-page__label">Админка</span>
+
+            <h1 class="admin-page__title">Портфолио</h1>
+
+            <p class="admin-page__description">
+                Управление фотосериями, обложками, категориями и фотографиями внутри каждой серии.
+            </p>
+        </div>
+
+        <div class="admin-page__actions">
+            <a asp-action="CreatePortfolioItem" class="admin-button admin-button--primary">
+                Добавить фотосерию
+            </a>
+
+            <a asp-action="Index" class="admin-button admin-button--secondary">
+                Назад в панель
+            </a>
+        </div>
+    </div>
+
+    @if (Model == null || !Model.Any())
+    {
+        <div class="admin-card">
+            <h2>Фотосерии не добавлены</h2>
+
+            <p>
+                Добавьте первую фотосерию, чтобы она появилась в разделе портфолио.
+            </p>
+
+            <a asp-action="CreatePortfolioItem" class="admin-button admin-button--primary">
+                Добавить фотосерию
+            </a>
+        </div>
+    }
+    else
+    {
+        <div class="admin-portfolio-list">
+            @foreach (var item in Model)
+            {
+                var imageCount = item.Images != null ? item.Images.Count : 0;
+
+                var shootingDateText = item.ShootingDate.HasValue
+                    ? item.ShootingDate.Value.ToString("dd.MM.yyyy")
+                    : "Дата не указана";
+
+                <article class="admin-portfolio-card">
+                    <div class="admin-portfolio-card__image">
+                        @if (!string.IsNullOrWhiteSpace(item.ImagePath))
+                        {
+                            <img src="@item.ImagePath" alt="@item.Title" />
+                        }
+                        else
+                        {
+                            <div class="admin-placeholder">
+                                Изображение не загружено
+                            </div>
+                        }
+                    </div>
+
+                    <div>
+                        <div class="admin-service-card__top">
+                            <div>
+                                <div class="admin-card-kicker">
+                                    @(item.Category?.Name ?? "Без категории")
+                                </div>
+
+                                <h2 class="admin-portfolio-card__title">
+                                    @item.Title
+                                </h2>
+                            </div>
+
+                            <div class="admin-portfolio-card__date">
+                                @shootingDateText
+                            </div>
+                        </div>
+
+                        <p class="admin-portfolio-card__description">
+                            @(string.IsNullOrWhiteSpace(item.Description) ? "Описание фотосерии не заполнено." : item.Description)
+                        </p>
+
+                        <div class="admin-meta-grid">
+                            <div class="admin-meta-item">
+                                <span class="admin-meta-item__label">Фотограф</span>
+                                <span class="admin-meta-item__value">
+                                    @(item.Photographer?.FullName ?? "Не указан")
+                                </span>
+                            </div>
+
+                            <div class="admin-meta-item">
+                                <span class="admin-meta-item__label">Студия</span>
+                                <span class="admin-meta-item__value">
+                                    @(item.Studio?.Name ?? "Без студии")
+                                </span>
+                            </div><div class="admin-meta-item">
+                                <span class="admin-meta-item__label">Фото</span>
+                                <span class="admin-meta-item__value">
+                                    @imageCount
+                                </span>
+                            </div>
+
+                            <div class="admin-meta-item">
+                                <span class="admin-meta-item__label">Показ</span>
+                                <span class="admin-meta-item__value">
+                                    @(item.IsFeatured ? "Избранная" : "Обычная")
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="admin-card-actions">
+                        <a asp-action="PortfolioImages"
+                           asp-route-portfolioItemId="@item.Id"
+                           class="admin-button admin-button--secondary">
+                            Фотографии
+                        </a>
+
+                        <a asp-action="EditPortfolioItem"
+                           asp-route-id="@item.Id"
+                           class="admin-button admin-button--secondary">
+                            Изменить
+                        </a>
+
+                        <a asp-action="DeletePortfolioItem"
+                           asp-route-id="@item.Id"
+                           class="admin-button admin-button--danger">
+                            Удалить
+                        </a>
+                    </div>
+                </article>
+            }
+        </div>
+    }
+</section>

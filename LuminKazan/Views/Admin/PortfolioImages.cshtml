@@ -1,0 +1,138 @@
+﻿@model LuminKazan.Models.PortfolioItem
+
+@{
+    Layout = "_AdminLayout";
+    ViewData["Title"] = "Фотографии серии";
+
+    var images = Model.Images == null
+        ? new List<LuminKazan.Models.PortfolioImage>()
+        : Model.Images.OrderBy(image => image.SortOrder).ThenBy(image => image.Id).ToList();
+}
+
+<section class="admin-page">
+    <div class="admin-page__header">
+        <div>
+            <span class="admin-page__label">Фотосерия</span>
+
+            <h1 class="admin-page__title">Фотографии серии</h1>
+
+            <p class="admin-page__description">
+                @Model.Title
+            </p>
+        </div>
+
+        <div class="admin-page__actions">
+            <a asp-action="CreatePortfolioImage"
+               asp-route-portfolioItemId="@Model.Id"
+               class="admin-button admin-button--primary">
+                Добавить фотографию
+            </a>
+
+            <a asp-action="EditPortfolioItem"
+               asp-route-id="@Model.Id"
+               class="admin-button admin-button--secondary">
+                Редактировать фотосерию
+            </a>
+
+            <a asp-action="PortfolioItems"
+               class="admin-button admin-button--secondary">
+                Назад к портфолио
+            </a>
+        </div>
+    </div>
+
+    <section class="admin-card" style="margin-bottom: 22px;">
+        <div class="admin-meta-grid">
+            <div class="admin-meta-item">
+                <span class="admin-meta-item__label">Категория</span>
+                <span class="admin-meta-item__value">
+                    @(Model.Category?.Name ?? "Не указана")
+                </span>
+            </div>
+
+            <div class="admin-meta-item">
+                <span class="admin-meta-item__label">Фотограф</span>
+                <span class="admin-meta-item__value">
+                    @(Model.Photographer?.FullName ?? "Не указан")
+                </span>
+            </div>
+
+            <div class="admin-meta-item">
+                <span class="admin-meta-item__label">Студия</span>
+                <span class="admin-meta-item__value">
+                    @(Model.Studio?.Name ?? "Без студии")
+                </span>
+            </div>
+
+            <div class="admin-meta-item">
+                <span class="admin-meta-item__label">Фото в серии</span>
+                <span class="admin-meta-item__value">
+                    @images.Count
+                </span>
+            </div>
+        </div>
+    </section>
+
+    @if (!images.Any())
+    {
+        <div class="admin-empty">
+            <h2>Фотографии не добавлены</h2>
+
+            <p>
+                В этой фотосерии пока нет отдельных фотографий.
+            </p>
+
+            <a asp-action="CreatePortfolioImage"
+               asp-route-portfolioItemId="@Model.Id"
+               class="admin-button admin-button--primary">
+                Добавить фотографию
+            </a>
+        </div>
+    }
+    else
+    {
+        <div class="admin-photo-grid">
+            @foreach (var image in images)
+            {
+                <article class="admin-photo-card">
+                    <div class="admin-photo-card__image">
+                        @if (!string.IsNullOrWhiteSpace(image.ImagePath))
+                        {
+                            <img src="@image.ImagePath" alt="@(string.IsNullOrWhiteSpace(image.Caption) ? Model.Title : image.Caption)" />
+                        }
+                        else
+                        {
+                            <div class="admin-placeholder">
+                                Фото не добавлено
+                            </div>
+                        }
+                    </div>
+
+                    <div class="admin-photo-card__body">
+                        <h2 class="admin-photo-card__caption">
+                            @(string.IsNullOrWhiteSpace(image.Caption) ? "Без подписи" : image.Caption)
+                        </h2>
+
+                        <p class="admin-photo-card__meta">
+                            Порядок отображения: @image.SortOrder
+                        </p>
+
+                        <div class="admin-photo-card__actions">
+                            <a asp-action="EditPortfolioImage"
+                               asp-route-id="@image.Id"
+                               class="admin-button admin-button--secondary">
+                                Изменить
+                            </a>
+
+                            <a asp-action="DeletePortfolioImage"
+                               asp-route-id="@image.Id"
+                               class="admin-button admin-button--danger">
+                                Удалить
+                            </a>
+                        </div>
+                    </div>
+                </article>
+            }
+        </div>
+    }
+</section>

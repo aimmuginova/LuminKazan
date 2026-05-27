@@ -1,0 +1,126 @@
+﻿@model LuminKazan.ViewModels.PortfolioItemFormViewModel
+
+@{
+    Layout = "_AdminLayout";
+    ViewData["Title"] = "Редактирование фотосерии";
+}
+
+<section class="admin-page">
+    <div class="admin-page__header">
+        <div>
+            <span class="admin-page__label">Портфолио</span>
+
+            <h1 class="admin-page__title">Редактирование фотосерии</h1>
+
+            <p class="admin-page__description">
+                Изменение обложки, описания, категории, студии и отображения фотосерии.
+            </p>
+        </div>
+
+        <div class="admin-page__actions">
+            <a asp-action="PortfolioItems" class="admin-button admin-button--secondary">
+                Назад к портфолио
+            </a>
+        </div>
+    </div>
+
+    <form asp-action="EditPortfolioItem" method="post" enctype="multipart/form-data" class="admin-form">
+        @Html.AntiForgeryToken()
+
+        <input asp-for="PortfolioItem.Id" type="hidden" />
+
+        <div asp-validation-summary="ModelOnly" class="validation-summary-errors"></div>
+
+        <section class="admin-form__section">
+            <span class="admin-form__section-label">Фотосерия</span>
+
+            <h2 class="admin-form__section-title">Основная информация</h2>
+
+            <div class="admin-form__grid">
+                <div class="admin-form__field admin-form__field--wide">
+                    <label asp-for="PortfolioItem.Title">Название фотосерии</label>
+                    <input asp-for="PortfolioItem.Title" />
+                    <span asp-validation-for="PortfolioItem.Title" class="admin-validation"></span>
+                </div>
+
+                <div class="admin-form__field admin-form__field--wide">
+                    <label asp-for="PortfolioItem.Description">Описание</label>
+                    <textarea asp-for="PortfolioItem.Description"></textarea>
+                    <span asp-validation-for="PortfolioItem.Description" class="admin-validation"></span>
+                </div>
+
+                <div class="admin-form__field">
+                    <label asp-for="PortfolioItem.CategoryId">Категория</label>
+                    <select asp-for="PortfolioItem.CategoryId" asp-items="Model.Categories"></select>
+                    <span asp-validation-for="PortfolioItem.CategoryId" class="admin-validation"></span>
+                </div>
+
+                <div class="admin-form__field">
+                    <label asp-for="PortfolioItem.PhotographerId">Фотограф</label>
+                    <select asp-for="PortfolioItem.PhotographerId" asp-items="Model.Photographers"></select>
+                    <span asp-validation-for="PortfolioItem.PhotographerId" class="admin-validation"></span>
+                </div>
+
+                <div class="admin-form__field">
+                    <label asp-for="PortfolioItem.StudioId">Студия</label>
+                    <select asp-for="PortfolioItem.StudioId" asp-items="Model.Studios"></select>
+                    <span asp-validation-for="PortfolioItem.StudioId" class="admin-validation"></span>
+                </div>
+
+                <div class="admin-form__field">
+                    <label asp-for="PortfolioItem.ShootingDate">Дата съемки</label>
+                    <input asp-for="PortfolioItem.ShootingDate" type="date" />
+                    <span asp-validation-for="PortfolioItem.ShootingDate" class="admin-validation"></span>
+                </div>
+
+                <div class="admin-form__field admin-form__field--wide">
+                    <label class="admin-checkbox">
+                        <input asp-for="PortfolioItem.IsFeatured" />
+                        <span>Показывать серию в избранных на сайте</span>
+                    </label>
+                </div>
+            </div>
+        </section>
+
+        <section class="admin-form__section">
+            <span class="admin-form__section-label">Обложка</span>
+
+            <h2 class="admin-form__section-title">Обложка фотосерии</h2><div class="admin-form__grid">
+                <div class="admin-form__field admin-form__field--wide">
+                    <label asp-for="CoverImageFile">Загрузить новую обложку</label>
+                    <input asp-for="CoverImageFile" type="file" accept=".jpg,.jpeg,.png,.webp" />
+                    <span asp-validation-for="CoverImageFile" class="admin-validation"></span>
+                    <p class="admin-form__hint">При загрузке нового файла текущая обложка будет заменена.</p>
+                </div>
+
+                <div class="admin-form__field admin-form__field--wide">
+                    <label asp-for="PortfolioItem.ImagePath">Путь к изображению</label>
+                    <input asp-for="PortfolioItem.ImagePath" />
+                    <span asp-validation-for="PortfolioItem.ImagePath" class="admin-validation"></span>
+
+                    @if (!string.IsNullOrWhiteSpace(Model.PortfolioItem.ImagePath))
+                    {
+                        <div class="admin-current-image">
+                            <span class="admin-form__hint">Текущая обложка</span>
+                            <img src="@Model.PortfolioItem.ImagePath" alt="@Model.PortfolioItem.Title" />
+                        </div>
+                    }
+                </div>
+            </div>
+        </section>
+
+        <div class="admin-form__actions">
+            <button type="submit" class="admin-button admin-button--primary">
+                Сохранить изменения
+            </button>
+
+            <a asp-action="PortfolioItems" class="admin-button admin-button--secondary">
+                Отмена
+            </a>
+        </div>
+    </form>
+</section>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

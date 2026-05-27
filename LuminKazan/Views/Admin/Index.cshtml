@@ -1,0 +1,382 @@
+﻿@model LuminKazan.ViewModels.AdminDashboardViewModel
+
+@{
+    Layout = "_AdminLayout";
+    ViewData["Title"] = "Панель администратора";
+}
+
+<style>
+    .dashboard-page {
+        width: min(100%, 1240px);
+        margin: 0 auto;
+        padding: 44px 24px 72px;
+    }
+
+    .dashboard-header {
+        margin-bottom: 28px;
+    }
+
+    .dashboard-eyebrow {
+        display: block;
+        margin-bottom: 10px;
+        color: #a46b47;
+        font-size: 12px;
+        line-height: 1.2;
+        font-weight: 800;
+        letter-spacing: 0.22em;
+        text-transform: uppercase;
+    }
+
+    .dashboard-title {
+        margin: 0 0 12px;
+        color: #1f1c19;
+        font-size: 46px;
+        line-height: 1.02;
+        font-weight: 850;
+        letter-spacing: -0.035em;
+    }
+
+    .dashboard-description {
+        max-width: 760px;
+        margin: 0;
+        color: #6b6057;
+        font-size: 18px;
+        line-height: 1.45;
+        font-weight: 400;
+    }
+
+    .dashboard-stats {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 16px;
+        margin-bottom: 24px;
+    }
+
+    .dashboard-stat {
+        min-height: 118px;
+        padding: 24px;
+        background: #ffffff;
+        border: 1px solid #eaded4;
+        border-radius: 22px;
+        box-shadow: 0 18px 48px rgba(31, 28, 25, 0.05);
+    }
+
+    .dashboard-stat__value {
+        margin: 0 0 6px;
+        color: #1f1c19;
+        font-size: 42px;
+        line-height: 1;
+        font-weight: 850;
+        letter-spacing: -0.03em;
+    }
+
+    .dashboard-stat__label {
+        margin: 0;
+        color: #6b6057;
+        font-size: 16px;
+        line-height: 1.35;
+        font-weight: 500;
+    }
+
+    .dashboard-shortcuts {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-bottom: 24px;
+    }
+
+    .dashboard-shortcut {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 48px;
+        padding: 0 22px;
+        border-radius: 999px;
+        border: 1px solid #dfcfc1;
+        background: #fffaf5;
+        color: #1f1c19 !important;
+        font-size: 15px;
+        line-height: 1;
+        font-weight: 800;
+        text-decoration: none !important;
+        white-space: nowrap;
+        opacity: 1;
+        visibility: visible;
+    }
+
+        .dashboard-shortcut:hover {
+            background: #f7eee6;
+            color: #1f1c19 !important;
+            text-decoration: none !important;
+        }
+
+    .dashboard-panels {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 16px;
+    }
+
+    .dashboard-panel {
+        min-height: 190px;
+        padding: 26px;
+        background: #ffffff;
+        border: 1px solid #eaded4;
+        border-radius: 22px;
+        box-shadow: 0 18px 48px rgba(31, 28, 25, 0.05);
+    }
+
+        .dashboard-panel h3 {
+            margin: 0 0 10px;
+            color: #1f1c19;
+            font-size: 26px;
+            line-height: 1.15;
+            font-weight: 850;
+            letter-spacing: -0.025em;
+        }
+
+        .dashboard-panel p {
+            max-width: 560px;
+            margin: 0 0 22px;
+            color: #6b6057;
+            font-size: 16px;
+            line-height: 1.5;
+            font-weight: 400;
+        }
+
+    .dashboard-panel__button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 44px;
+        padding: 0 20px;
+        border-radius: 999px;
+        border: 1px solid #dfcfc1;
+        background: #fffaf5;
+        color: #1f1c19 !important;
+        font-size: 15px;
+        line-height: 1;
+        font-weight: 800;
+        text-decoration: none !important;
+        white-space: nowrap;
+    }
+
+        .dashboard-panel__button:hover {
+            background: #f7eee6;
+            color: #1f1c19 !important;
+            text-decoration: none !important;
+        }
+
+    @@media (max-width: 1100px) {
+        .dashboard-stats {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+
+        .dashboard-panels {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    @@media (max-width: 720px) {
+        .dashboard-page {
+            padding: 34px 18px 60px;
+        }
+
+        .dashboard-title {
+            font-size: 34px;
+        }
+
+        .dashboard-description {
+            font-size: 16px;
+        }
+
+        .dashboard-stats {
+            grid-template-columns: 1fr;
+        }
+
+        .dashboard-stat {
+            min-height: auto;
+        }
+
+        .dashboard-shortcut {
+            width: 100%;
+        }
+    }
+</style>
+
+<div class="dashboard-page">
+    <section class="dashboard-header">
+        <span class="dashboard-eyebrow">Админ-панель</span>
+
+        <h1 class="dashboard-title">Панель администратора</h1>
+
+        <p class="dashboard-description">
+            Управление главной страницей, расписанием, заявками, услугами, студиями, портфолио и отзывами.
+        </p>
+    </section>
+
+    <section class="dashboard-stats">
+        <div class="dashboard-stat">
+            <div class="dashboard-stat__value">@Model.TotalBookings</div>
+            <p class="dashboard-stat__label">Заявок</p>
+        </div>
+
+        <div class="dashboard-stat">
+            <div class="dashboard-stat__value">@Model.TotalPortfolioItems</div>
+            <p class="dashboard-stat__label">Работ в портфолио</p>
+        </div>
+
+        <div class="dashboard-stat">
+            <div class="dashboard-stat__value">@Model.TotalStudios</div>
+            <p class="dashboard-stat__label">Студий</p>
+        </div>
+
+        <div class="dashboard-stat">
+            <div class="dashboard-stat__value">@Model.TotalServices</div>
+            <p class="dashboard-stat__label">Услуг</p>
+        </div>
+    </section>
+
+    <section class="dashboard-shortcuts">
+        <a asp-controller="AdminHome"
+           asp-action="Edit"
+           class="dashboard-shortcut">
+            Главная страница
+        </a>
+
+        <a asp-controller="AdminSchedule"
+           asp-action="Index"
+           class="dashboard-shortcut">
+            Расписание
+        </a>
+
+        <a asp-controller="Admin"
+           asp-action="Bookings"
+           class="dashboard-shortcut">
+            Смотреть заявки
+        </a>
+
+        <a asp-controller="Admin"
+           asp-action="Services"
+           class="dashboard-shortcut">
+            Управление услугами
+        </a>
+
+        <a asp-controller="Admin"
+           asp-action="Studios"
+           class="dashboard-shortcut">
+            Управление студиями
+        </a>
+
+        <a asp-controller="Admin"
+           asp-action="PortfolioItems"
+           class="dashboard-shortcut">
+            Управление портфолио
+        </a>
+
+        <a asp-controller="Admin"
+           asp-action="Reviews"
+           class="dashboard-shortcut">
+            Управление отзывами
+        </a>
+    </section>
+
+    <section class="dashboard-panels">
+        <article class="dashboard-panel">
+            <h3>Главная страница</h3>
+
+            <p>
+                Основной блок сайта, описание фотографа, контактные данные и главное изображение.
+            </p>
+
+            <a asp-controller="AdminHome"
+               asp-action="Edit"
+               class="dashboard-panel__button">
+                Открыть раздел
+            </a>
+        </article>
+
+        <article class="dashboard-panel">
+            <h3>Расписание</h3>
+
+            <p>
+                Занятые интервалы, ограничения по датам и периоды недоступности для записи.
+            </p>
+
+            <a asp-controller="AdminSchedule"
+               asp-action="Index"
+               class="dashboard-panel__button">
+                Открыть раздел
+            </a>
+        </article>
+
+        <article class="dashboard-panel">
+            <h3>Заявки</h3>
+
+            <p>
+                Обращения клиентов, даты съемок, выбранные услуги, студии, комментарии и статусы.
+            </p>
+
+            <a asp-controller="Admin"
+               asp-action="Bookings"
+               class="dashboard-panel__button">
+                Открыть раздел
+            </a>
+        </article>
+
+        <article class="dashboard-panel">
+            <h3>Услуги</h3>
+
+            <p>
+                Форматы съемок, стоимость, длительность, количество фотографий и сроки готовности.
+            </p>
+
+            <a asp-controller="Admin"
+               asp-action="Services"
+               class="dashboard-panel__button">
+                Открыть раздел
+            </a>
+        </article>
+
+        <article class="dashboard-panel">
+            <h3>Студии</h3>
+
+            <p>
+                Карточки студий, адреса, изображения, параметры, стоимость и отображение на сайте.
+            </p>
+
+            <a asp-controller="Admin"
+               asp-action="Studios"
+               class="dashboard-panel__button">
+                Открыть раздел
+            </a>
+        </article>
+
+        <article class="dashboard-panel">
+            <h3>Портфолио</h3>
+
+            <p>
+                Фотосерии, обложки, категории, фотографии внутри серии и порядок отображения.
+            </p>
+
+            <a asp-controller="Admin"
+               asp-action="PortfolioItems"
+               class="dashboard-panel__button">
+                Открыть раздел
+            </a>
+        </article>
+
+        <article class="dashboard-panel">
+            <h3>Отзывы</h3>
+
+            <p>
+                Отзывы клиентов, статусы публикации и отображение на главной странице.
+            </p>
+
+            <a asp-controller="Admin"
+               asp-action="Reviews"
+               class="dashboard-panel__button">
+                Открыть раздел
+            </a>
+        </article>
+    </section>
+</div>

@@ -1,0 +1,170 @@
+﻿@model LuminKazan.ViewModels.StudioFormViewModel
+
+@{
+    Layout = "_AdminLayout";
+    ViewData["Title"] = "Редактирование студии";
+}
+
+<section class="admin-page">
+    <div class="admin-page__header">
+        <div>
+            <span class="admin-page__label">Студии</span>
+
+            <h1 class="admin-page__title">Редактирование студии</h1>
+
+            <p class="admin-page__description">
+                Изменение данных студии, обложки, описания, адреса и параметров отображения.
+            </p>
+        </div>
+
+        <div class="admin-page__actions">
+            <a asp-controller="Admin"
+               asp-action="Studios"
+               class="admin-button admin-button--secondary">
+                Назад к студиям
+            </a>
+        </div>
+    </div>
+
+    <form asp-controller="Admin"
+          asp-action="EditStudio"
+          asp-route-id="@Model.Id"
+          method="post"
+          enctype="multipart/form-data"
+          class="admin-form">
+
+        @Html.AntiForgeryToken()
+
+        <input asp-for="Id" type="hidden" />
+        <input asp-for="CurrentImagePath" type="hidden" />
+
+        <div asp-validation-summary="ModelOnly" class="admin-validation"></div>
+
+        <section class="admin-form__section">
+            <span class="admin-form__section-label">Студия</span>
+
+            <h2 class="admin-form__section-title">Основная информация</h2>
+
+            <div class="admin-form__grid">
+                <div class="admin-form__field admin-form__field--wide">
+                    <label asp-for="Name">Название студии</label>
+                    <input asp-for="Name" />
+                    <span asp-validation-for="Name" class="admin-validation"></span>
+                </div>
+
+                <div class="admin-form__field">
+                    <label asp-for="District">Район</label>
+                    <input asp-for="District" />
+                    <span asp-validation-for="District" class="admin-validation"></span>
+                </div>
+
+                <div class="admin-form__field">
+                    <label asp-for="Address">Адрес</label>
+                    <input asp-for="Address" />
+                    <span asp-validation-for="Address" class="admin-validation"></span>
+                </div>
+
+                <div class="admin-form__field admin-form__field--wide">
+                    <label asp-for="Description">Описание</label>
+                    <textarea asp-for="Description" rows="6"></textarea>
+                    <span asp-validation-for="Description" class="admin-validation"></span>
+                </div>
+            </div>
+        </section>
+
+        <section class="admin-form__section">
+            <span class="admin-form__section-label">Параметры</span>
+
+            <h2 class="admin-form__section-title">Стоимость и характеристики</h2>
+
+            <div class="admin-form__grid">
+                <div class="admin-form__field">
+                    <label asp-for="PricePerHour">Цена за час, ₽</label>
+                    <input asp-for="PricePerHour" />
+                    <span asp-validation-for="PricePerHour" class="admin-validation"></span>
+                </div>
+
+                <div class="admin-form__field">
+                    <label asp-for="HallCount">Количество залов</label>
+                    <input asp-for="HallCount" type="number" min="1" step="1" />
+                    <span asp-validation-for="HallCount" class="admin-validation"></span>
+                </div>
+
+                <div class="admin-form__field admin-form__field--wide">
+                    <label asp-for="InteriorStyle">Стиль интерьера</label>
+                    <input asp-for="InteriorStyle" />
+                    <span asp-validation-for="InteriorStyle" class="admin-validation"></span>
+                </div>
+
+                <div class="admin-form__field admin-form__field--wide">
+                    <label asp-for="WebsiteUrl">Сайт или страница студии</label>
+                    <input asp-for="WebsiteUrl" />
+                    <span asp-validation-for="WebsiteUrl" class="admin-validation"></span>
+                </div>
+
+                <div class="admin-form__field admin-form__field--checkbox">
+                    <label>
+                        <input asp-for="HasNaturalLight" />
+                        Есть естественный свет
+                    </label>
+                    <span asp-validation-for="HasNaturalLight" class="admin-validation"></span>
+                </div>
+
+                <div class="admin-form__field admin-form__field--checkbox">
+                    <label>
+                        <input asp-for="IsActive" />
+                        Показывать студию на сайте
+                    </label>
+                    <span asp-validation-for="IsActive" class="admin-validation"></span>
+                </div>
+            </div>
+        </section>
+
+        <section class="admin-form__section">
+            <span class="admin-form__section-label">Обложка</span>
+
+            <h2 class="admin-form__section-title">Изображение студии</h2>
+
+            @if (!string.IsNullOrWhiteSpace(Model.CurrentImagePath))
+            {
+                <div class="admin-current-image">
+                    <img src="@Model.CurrentImagePath" alt="@Model.Name" />
+                </div>
+            }
+
+            <div class="admin-form__grid">
+                <div class="admin-form__field admin-form__field--wide">
+                    <label asp-for="ImageFile">Загрузить новую обложку</label>
+
+                    <input asp-for="ImageFile"
+                           type="file"
+                           accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp" />
+
+                    <span asp-validation-for="ImageFile" class="admin-validation"></span>
+                </div>
+
+                <div class="admin-form__field admin-form__field--wide">
+                    <label asp-for="ImagePath">Путь к изображению</label>
+                    <input asp-for="ImagePath" />
+                    <span asp-validation-for="ImagePath" class="admin-validation"></span>
+                </div>
+            </div>
+        </section>
+
+        <div class="admin-form__actions">
+            <button type="submit" class="admin-button admin-button--primary">
+                Сохранить изменения
+            </button>
+
+            <a asp-controller="Admin"
+               asp-action="Studios"
+               class="admin-button admin-button--secondary">
+                Отмена
+            </a>
+        </div>
+    </form>
+</section>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

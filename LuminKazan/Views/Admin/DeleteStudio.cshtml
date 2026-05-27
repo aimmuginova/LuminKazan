@@ -1,0 +1,54 @@
+﻿@model LuminKazan.Models.Studio
+
+@{
+    ViewData["Title"] = "Скрытие студии";
+}
+
+<section class="admin-page">
+    <div class="admin-header">
+        <span class="section-label">Студии</span>
+        <h1>Скрытие студии</h1>
+        <p>Студия будет скрыта с сайта и больше не будет отображаться в публичном списке.</p>
+    </div>
+
+    <div class="booking-form-wrapper">
+        <div class="studio-delete-preview">
+            <div class="studio-delete-image">
+                @if (!string.IsNullOrWhiteSpace(Model.ImagePath))
+                {
+                    <img src="@Model.ImagePath" alt="@Model.Name" />
+                }
+                else
+                {
+                    <div class="studio-placeholder">STUDIO</div>
+                }
+            </div>
+
+            <div>
+                <h2>@Model.Name</h2>
+                <p><strong>Адрес:</strong> @Model.Address</p>
+                <p><strong>Район:</strong> @(Model.District ?? "Не указан")</p>
+                <p><strong>Цена:</strong> @Model.PricePerHour.ToString("N0") ₽/час</p>
+
+                @if (!string.IsNullOrWhiteSpace(Model.Description))
+                {
+                    <p>@Model.Description</p>
+                }
+            </div>
+        </div>
+
+        <form asp-controller="Admin" asp-action="DeleteStudio" method="post">
+            <input type="hidden" asp-for="Id" />
+
+            <div class="admin-links">
+                <button type="submit" class="btn btn-danger">
+                    Скрыть студию
+                </button>
+
+                <a asp-controller="Admin" asp-action="Studios" class="btn btn-outline-secondary">
+                    Отмена
+                </a>
+            </div>
+        </form>
+    </div>
+</section>
