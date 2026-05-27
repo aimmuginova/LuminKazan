@@ -1,0 +1,121 @@
+﻿@model LuminKazan.Models.Service
+
+@{
+    ViewData["Title"] = Model.Title;
+
+    var priceLabel = Model.Price > 0
+        ? $"{Model.Price:N0} ₽"
+        : "Стоимость уточняется";
+
+    var durationLabel = Model.DurationMinutes > 0
+        ? $"{Model.DurationMinutes} мин"
+        : "По договоренности";
+
+    var deliveryLabel = Model.DeliveryDays > 0
+        ? $"{Model.DeliveryDays} дн."
+        : "По договоренности";
+
+    var studioLabel = Model.IncludesStudio
+        ? "Студия включена в стоимость"
+        : "Студия подбирается отдельно";
+}
+
+<section class="service-detail-page">
+    <div class="service-detail-hero">
+        <div class="service-detail-content">
+            <span class="section-label">Формат съемки</span>
+
+            <h1>@Model.Title</h1>
+
+            <p class="service-detail-description">
+                @Model.Description
+            </p>
+
+            <div class="service-detail-price">
+                @priceLabel
+            </div>
+
+            <div class="service-detail-actions">
+                <a asp-controller="Booking"
+                   asp-action="Create"
+                   asp-route-serviceId="@Model.Id"
+                   class="btn-main">
+                    Записаться на съемку
+                </a>
+
+                <a asp-controller="Home"
+                   asp-action="Index"
+                   asp-fragment="services"
+                   class="btn-secondary">
+                    К форматам съемки
+                </a>
+            </div>
+        </div>
+
+        <div class="service-detail-card">
+            <h2>Что входит</h2>
+
+            <div class="service-detail-list">
+                <div>
+                    <span>Длительность</span>
+                    <strong>@durationLabel</strong>
+                </div>
+
+                <div>
+                    <span>Фото в ретуши</span>
+                    <strong>@Model.RetouchedPhotosCount</strong>
+                </div>
+
+                <div>
+                    <span>Все фотографии</span>
+                    <strong>@Model.AllPhotosCount</strong>
+                </div>
+
+                <div>
+                    <span>Срок готовности</span>
+                    <strong>@deliveryLabel</strong>
+                </div>
+
+                <div>
+                    <span>Студия</span>
+                    <strong>@studioLabel</strong>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="service-process-section">
+        <span class="section-label">Процесс</span>
+
+        <h2>Как проходит съемка</h2>
+
+        <div class="service-process-grid">
+            <div class="service-process-card">
+                <span>01</span>
+                <h3>Подготовка</h3>
+                <p>
+                    Согласуем задачу, образ, настроение, локацию и желаемый результат.
+                    На этом этапе становится понятно, какой формат съемки подойдет лучше.
+                </p>
+            </div>
+
+            <div class="service-process-card">
+                <span>02</span>
+                <h3>Съемка</h3>
+                <p>
+                    Работаем со светом, ракурсами, позированием и визуальной атмосферой.
+                    Цель - получить живые, эстетичные и естественные кадры.
+                </p>
+            </div>
+
+            <div class="service-process-card">
+                <span>03</span>
+                <h3>Отбор и обработка</h3>
+                <p>
+                    Фотографии проходят отбор, цветокоррекцию и ретушь согласно выбранному формату.
+                    Готовые материалы передаются после обработки.
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
